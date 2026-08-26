@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import LanguageToggle from '../../../components/LanguageToggle';
 import { getProduct, products, standardUse } from '../../product-data';
@@ -59,12 +60,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
   return (
     <main className="product-page">
       <nav className="detail-nav shell" aria-label="Product navigation">
-        <a className="brand" href="/" aria-label="Gao Dehat home">
+        <Link className="brand" href="/" aria-label="Gao Dehat home">
           <img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" />
-        </a>
+        </Link>
         <div className="detail-nav-links">
-          <a href="/"><Copy en="Home" hi="होम" /></a>
-          <a href="/#products"><Copy en="All products" hi="सभी उत्पाद" /></a>
+          <Link href="/"><Copy en="Home" hi="होम" /></Link>
+          <Link href="/#products"><Copy en="All products" hi="सभी उत्पाद" /></Link>
         </div>
         <div className="nav-actions">
           <LanguageToggle />
@@ -74,7 +75,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <section className="detail-hero">
         <div className="shell">
-          <a className="back-link" href="/#products">← <Copy en="Back to product catalogue" hi="उत्पाद सूची पर वापस" /></a>
+          <Link className="back-link" href="/#products">← <Copy en="Back to product catalogue" hi="उत्पाद सूची पर वापस" /></Link>
           <div className="detail-hero-grid">
             <div className={`detail-product-image ${product.className}`}>
               <img src={product.image} alt={`${product.name} product packaging`} />
@@ -168,7 +169,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="shell footer-inner">
           <div className="footer-brand"><img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" /></div>
           <p>© {new Date().getFullYear()} Gao Dehat Industries Pvt. Ltd.<br /><Copy en="A Vansh Group company" hi="वंश ग्रुप की एक कंपनी" /></p>
-          <a className="footer-phrase" href="/#products"><Copy en="View all products" hi="सभी उत्पाद देखें" /> ↗</a>
+          <Link className="footer-phrase" href="/#products"><Copy en="View all products" hi="सभी उत्पाद देखें" /> ↗</Link>
         </div>
       </footer>
     </main>

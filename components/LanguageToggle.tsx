@@ -10,9 +10,12 @@ export default function LanguageToggle() {
   useEffect(() => {
     const saved = window.localStorage.getItem('gao-dehat-language');
     const nextLanguage: Language = saved === 'hi' ? 'hi' : 'en';
-    setLanguage(nextLanguage);
     document.documentElement.dataset.language = nextLanguage;
     document.documentElement.lang = nextLanguage;
+    if (nextLanguage !== 'en') {
+      const frame = window.requestAnimationFrame(() => setLanguage(nextLanguage));
+      return () => window.cancelAnimationFrame(frame);
+    }
   }, []);
 
   function chooseLanguage(nextLanguage: Language) {

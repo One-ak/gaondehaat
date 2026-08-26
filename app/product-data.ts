@@ -57,7 +57,7 @@ export const products: Product[] = [
   {
     slug: 'green-force', className: 'green-force', name: 'Green Force', nameHi: 'ग्रीन फोर्स',
     type: 'Phosphate Rich Organic Manure', typeHi: 'फॉस्फेट समृद्ध जैविक खाद',
-    image: '/products/green-force.jpg', pack: '50 kg pack', packHi: '50 किग्रा पैक',
+    image: '/products/green-force-packshot.png', pack: '50 kg pack', packHi: '50 किग्रा पैक',
     note: 'PROM · 8% P₂O₅', noteHi: 'पीआरओएम · 8% पी₂ओ₅',
     overview: 'Phosphate Rich Organic Manure presented for soil-nutrition programmes.',
     overviewHi: 'मिट्टी पोषण कार्यक्रमों के लिए प्रस्तुत फॉस्फेट समृद्ध जैविक खाद।',
@@ -68,7 +68,7 @@ export const products: Product[] = [
   {
     slug: 'super-baan', className: 'super-baan', name: 'Super Baan', nameHi: 'सुपर बाण',
     type: 'Super Prime Granular / Powder PROM', typeHi: 'सुपर प्राइम दानेदार / पाउडर पीआरओएम',
-    image: '/products/super-baan.jpg', pack: '50 kg pack', packHi: '50 किग्रा पैक',
+    image: '/products/super-baan-packshot.png', pack: '50 kg pack', packHi: '50 किग्रा पैक',
     note: 'Granular & powder', noteHi: 'दानेदार और पाउडर',
     overview: 'A Super Prime PROM offered in granular and powder forms.',
     overviewHi: 'दानेदार और पाउडर रूप में उपलब्ध सुपर प्राइम पीआरओएम।',
@@ -79,7 +79,7 @@ export const products: Product[] = [
   {
     slug: 'dop-prom', className: 'dop-prom', name: 'DOP PROM', nameHi: 'डी ओ पी पीआरओएम',
     type: 'Phosphate Rich Organic Manure', typeHi: 'फॉस्फेट समृद्ध जैविक खाद',
-    image: '/products/dop-prom.jpg', pack: '50 kg pack', packHi: '50 किग्रा पैक',
+    image: '/products/dop-prom-packshot.png', pack: '50 kg pack', packHi: '50 किग्रा पैक',
     note: 'PROM · 8% P₂O₅', noteHi: 'पीआरओएम · 8% पी₂ओ₅',
     overview: 'A Phosphate Rich Organic Manure in a 50 kg pack.',
     overviewHi: '50 किग्रा पैक में फॉस्फेट समृद्ध जैविक खाद।',
@@ -90,7 +90,7 @@ export const products: Product[] = [
   {
     slug: 'potash', className: 'potash', name: 'Potash', nameHi: 'पोटाश',
     type: 'Dried Premium Molasses · K₂O 14.5%', typeHi: 'ड्राइड प्रीमियम मोलासेस · के₂ओ 14.5%',
-    image: '/products/potash.jpg', pack: '50 kg pack', packHi: '50 किग्रा पैक',
+    image: '/products/potash-packshot.png', pack: '50 kg pack', packHi: '50 किग्रा पैक',
     note: 'K₂O · 14.5%', noteHi: 'के₂ओ · 14.5%',
     overview: 'A dried premium molasses fertilizer for agricultural use, labelled K₂O 14.5%.',
     overviewHi: 'कृषि उपयोग के लिए ड्राइड प्रीमियम मोलासेस उर्वरक, जिस पर के₂ओ 14.5% अंकित है।',

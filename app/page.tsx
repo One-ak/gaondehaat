@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import LanguageToggle from '../components/LanguageToggle';
 import { products } from './product-data';
 
@@ -127,7 +128,7 @@ export default function Home() {
 
           <div className="product-grid">
             {products.map((product, index) => (
-              <a className={`product-card ${product.className}`} href={`/products/${product.slug}`} key={product.slug} aria-label={`View ${product.name} details`}>
+              <Link className={`product-card ${product.className}`} href={`/products/${product.slug}`} key={product.slug} aria-label={`View ${product.name} details`}>
                 <div className="product-image-wrap">
                   <span className="product-index">{String(index + 1).padStart(2, '0')}</span>
                   <img src={product.image} alt={`${product.name} product packaging`} />
@@ -139,7 +140,7 @@ export default function Home() {
                   <p><Copy en={product.type} hi={product.typeHi} /></p>
                   <div><span><Copy en={product.pack} hi={product.packHi} /></span><span className="arrow">↗</span></div>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
           <p className="product-footnote"><Copy en="* Product specifications are as shown on the respective product pack. Please use only as directed." hi="* उत्पाद की विशिष्टताएँ संबंधित उत्पाद पैक के अनुसार हैं। कृपया केवल निर्देशानुसार उपयोग करें।" /></p>
@@ -169,7 +170,7 @@ export default function Home() {
             <p className="eyebrow pale"><span /> <Copy en="Healthy plant, better yield" hi="स्वस्थ पौधा, बेहतर उपज" /></p>
             <h2><Copy en="Small drops." hi="छोटी बूंदें।" /><br /><em><Copy en="Real growth." hi="सच्ची वृद्धि।" /></em></h2>
             <p><Copy en="Super Power Win is our plant growth promoter, presented to support plant growth and development, stronger roots, more flowers and fruits, and improved yield and quality." hi="सुपर पावर विन हमारा पादप वृद्धि प्रवर्तक है, जो पौधों की वृद्धि व विकास, मजबूत जड़ों, अधिक फूल व फलों, तथा बेहतर उपज व गुणवत्ता के लिए प्रस्तुत किया गया है।" /></p>
-            <a className="button button-cream" href="/products/super-power-win"><Copy en="View product details" hi="उत्पाद विवरण देखें" /> <span>→</span></a>
+            <Link className="button button-cream" href="/products/super-power-win"><Copy en="View product details" hi="उत्पाद विवरण देखें" /> <span>→</span></Link>
           </div>
           <div className="growth-visual">
             <img src="/products/super-power-win.jpg" alt="Super Power Win product packaging" />
