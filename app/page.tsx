@@ -1,163 +1,37 @@
-const products = [
-  {
-    name: 'Super Calcium Gold',
-    type: 'Calcium, magnesium & nutrient elements',
-    hindi: 'सुपर कैल्शियम गोल्ड',
-    image: '/products/super-calcium-gold.png',
-    pack: '30 kg pack',
-    className: 'calcium-gold',
-    note: 'Better growth, stronger crops',
-  },
-  {
-    name: 'GIPL 24 Karat',
-    type: 'Gibberellic Acid 0.001% SL · Plant growth regulator',
-    hindi: 'जीआईपीएल 24 कैरट',
-    image: '/products/gipl-24-karat.jpeg',
-    pack: '100 ml',
-    className: 'gipl',
-    note: 'Plant growth regulator',
-  },
-  {
-    name: 'Green Force',
-    type: 'Phosphate Rich Organic Manure',
-    hindi: 'ग्रीन फोर्स',
-    image: '/products/green-force.jpg',
-    pack: '50 kg pack',
-    className: 'green-force',
-    note: 'PROM · 8% P₂O₅',
-  },
-  {
-    name: 'Super Baan',
-    type: 'Super Prime Granular / Powder PROM',
-    hindi: 'सुपर बाण',
-    image: '/products/super-baan.jpg',
-    pack: '50 kg pack',
-    className: 'super-baan',
-    note: 'Granular & powder',
-  },
-  {
-    name: 'DOP PROM',
-    type: 'Phosphate Rich Organic Manure',
-    hindi: 'डी ओ पी',
-    image: '/products/dop-prom.jpg',
-    pack: '50 kg pack',
-    className: 'dop-prom',
-    note: 'PROM · 8% P₂O₅',
-  },
-  {
-    name: 'Potash',
-    type: 'Dried Premium Molasses',
-    hindi: 'पोटाश',
-    image: '/products/potash.jpg',
-    pack: '50 kg pack',
-    className: 'potash',
-    note: 'K₂O · 14.5%',
-  },
-  {
-    name: 'Surya Super Zinc',
-    type: 'Water-soluble fertilizer for foliar spray',
-    hindi: 'सूर्या सुपर जिंक',
-    image: '/products/surya-super-zinc.jpeg',
-    pack: '250 g',
-    className: 'surya-zinc',
-    note: '100% water soluble',
-  },
-  {
-    name: 'Zinc Super Gold',
-    type: 'Micronutrients fertilizer · Micronutrients + Sulphur',
-    hindi: 'जिंक सुपर गोल्ड',
-    image: '/products/zinc-super-gold.jpeg',
-    pack: 'Crop & flower yield',
-    className: 'zinc-gold',
-    note: 'Micronutrients + sulphur',
-  },
-  {
-    name: 'Mono Zinc',
-    type: 'Zinc Sulphate Monohydrate · Zn 33% min · S 15% min',
-    hindi: 'मोनो जिंक',
-    image: '/products/mono-zinc.jpeg',
-    pack: 'Agriculture grade',
-    className: 'mono-zinc',
-    note: 'Zinc sulphate monohydrate',
-  },
-  {
-    name: 'Magnesium Gold',
-    type: 'Magnesium 9.5% · Sulphate 12%',
-    hindi: 'मैग्नीशियम गोल्ड',
-    image: '/products/magnesium-gold.jpeg',
-    pack: 'Crop & flower yield',
-    className: 'magnesium-gold',
-    note: 'Magnesium + sulphate',
-  },
-  {
-    name: 'Fertile Blossom High Zinc',
-    type: 'Micronutrients fertilizer · Micronutrients + Sulphur',
-    hindi: 'फर्टाइल ब्लॉसम हाई जिंक',
-    image: '/products/fertile-blossom-high-zinc.jpeg',
-    pack: 'Crop & flower yield',
-    className: 'blossom-zinc',
-    note: 'Micronutrients + sulphur',
-  },
-  {
-    name: 'Boron Gold',
-    type: 'Sodium Tetraborate · Boron (B) 10.5% w/w min',
-    hindi: 'बोरॉन गोल्ड',
-    image: '/products/boron-gold.jpeg',
-    pack: 'For soil application',
-    className: 'boron-gold',
-    note: 'Micronutrient fertilizer',
-  },
-  {
-    name: 'Micro Force',
-    type: 'Ferrous Sulphate · 19%',
-    hindi: 'माइक्रो फोर्स',
-    image: '/products/micro-force.jpeg',
-    pack: 'Micronutrient fertilizer',
-    className: 'micro-force',
-    note: 'Ferrous sulphate',
-  },
-  {
-    name: 'Black Gold',
-    type: 'Organic growth stimulator · Humic 98% w/w',
-    hindi: 'ब्लैक गोल्ड',
-    image: '/products/black-gold.jpeg',
-    pack: 'Organic crop support',
-    className: 'black-gold',
-    note: 'Humic 98% w/w',
-  },
-  {
-    name: 'Bhumi Pakar',
-    type: 'Nitro 35% + Humic Acid 15% + Amino Acid 10%',
-    hindi: 'भूमि पकार',
-    image: '/products/bhumihar.jpeg',
-    pack: 'Biostimulant product',
-    className: 'bhumihar',
-    note: 'Biostimulant',
-  },
-  {
-    name: 'Haryali Gold',
-    type: 'Chelated Iron as Fe-EDTA 12%',
-    hindi: 'हरियाली गोल्ड',
-    image: '/products/haryali-gold.jpeg',
-    pack: 'Drip & foliar application',
-    className: 'haryali-gold',
-    note: 'Chelated iron',
-  },
-  {
-    name: 'Super Power Win',
-    type: 'Plant Growth Promoter',
-    hindi: 'सुपर पावर विन',
-    image: '/products/super-power-win.jpg',
-    pack: '0.3 L × 10 pack',
-    className: 'power-win',
-    note: 'For healthy plants & better yield',
-  },
-];
+import LanguageToggle from '../components/LanguageToggle';
+import { products } from './product-data';
+
+function Copy({ en, hi }: { en: string; hi: string }) {
+  return (
+    <>
+      <span className="copy-en">{en}</span>
+      <span className="copy-hi" lang="hi">{hi}</span>
+    </>
+  );
+}
 
 const practices = [
-  ['01', 'Farmer first', 'Practical solutions made for stronger crops and better farm outcomes.'],
-  ['02', 'Soil conscious', 'Organic and bio-based inputs that support long-term soil vitality.'],
-  ['03', 'Quality focused', 'Reliable formulations, thoughtful packaging, and clear product information.'],
+  {
+    number: '01',
+    title: 'Quality-led inputs',
+    titleHi: 'गुणवत्ता-केंद्रित इनपुट',
+    copy: 'Clear product information and dependable agricultural inputs designed around farm needs.',
+    copyHi: 'खेत की जरूरतों के अनुरूप स्पष्ट उत्पाद जानकारी और भरोसेमंद कृषि इनपुट।',
+  },
+  {
+    number: '02',
+    title: 'Field understanding',
+    titleHi: 'खेतों की समझ',
+    copy: 'Soil nutrition, crop performance and practical application guidance in one focused range.',
+    copyHi: 'मिट्टी पोषण, फसल प्रदर्शन और व्यावहारिक उपयोग सलाह—एक केंद्रित रेंज में।',
+  },
+  {
+    number: '03',
+    title: 'Partner support',
+    titleHi: 'साझेदार सहयोग',
+    copy: 'Product and bulk-supply enquiries for farmers, dealers and distribution partners.',
+    copyHi: 'किसानों, डीलरों और वितरण साझेदारों के लिए उत्पाद व बल्क-सप्लाई सहायता।',
+  },
 ];
 
 export default function Home() {
@@ -169,25 +43,28 @@ export default function Home() {
             <img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" />
           </a>
           <div className="nav-links">
-            <a href="#about">Our purpose</a>
-            <a href="#products">Products</a>
-            <a href="#contact">Connect</a>
+            <a href="#about"><Copy en="Our purpose" hi="हमारा उद्देश्य" /></a>
+            <a href="#products"><Copy en="Products" hi="उत्पाद" /></a>
+            <a href="#contact"><Copy en="Connect" hi="संपर्क" /></a>
           </div>
-          <a className="nav-cta" href="#products">Explore products <span>↗</span></a>
+          <div className="nav-actions">
+            <LanguageToggle />
+            <a className="nav-cta" href="#products"><Copy en="Explore products" hi="उत्पाद देखें" /> <span>↗</span></a>
+          </div>
         </nav>
 
         <div className="hero-grid shell">
           <div className="hero-copy">
-            <p className="eyebrow"><span /> From the fields, for the fields</p>
-            <h1>Healthy soil.<br /><em>Abundant</em> harvests.</h1>
-            <p className="hero-text">Gao Dehat brings dependable organic and bio-based agricultural inputs to the people growing India&apos;s future.</p>
+            <p className="eyebrow"><span /> <Copy en="From the fields, for the fields" hi="खेतों से, खेतों के लिए" /></p>
+            <h1><Copy en="Healthy soil." hi="स्वस्थ मिट्टी।" /><br /><em><Copy en="Abundant" hi="समृद्ध" /></em> <Copy en="harvests." hi="फसलें।" /></h1>
+            <p className="hero-text"><Copy en="Gao Dehat brings dependable crop nutrition and agricultural inputs to the people growing India’s future." hi="गाँव देहात भारत के भविष्य को उगाने वाले किसानों के लिए भरोसेमंद फसल-पोषण और कृषि इनपुट लाता है।" /></p>
             <div className="hero-actions">
-              <a className="button button-dark" href="#products">See our range <span>↓</span></a>
-              <a className="text-link" href="#about">The Gao Dehat way <span>→</span></a>
+              <a className="button button-dark" href="#products"><Copy en="See our range" hi="हमारी रेंज देखें" /> <span>↓</span></a>
+              <a className="text-link" href="#about"><Copy en="The Gao Dehat way" hi="गाँव देहात की सोच" /> <span>→</span></a>
             </div>
             <div className="hero-proof">
               <div className="mini-seal">GD</div>
-              <p><strong>ग्राम्य पोषण, समृद्ध किसान</strong><br />Nourishing the soil. Empowering the farmer.</p>
+              <p><strong>ग्राम्य पोषण, समृद्ध किसान</strong><br /><Copy en="Nourishing the soil. Empowering the farmer." hi="मिट्टी को पोषण, किसान को समृद्धि।" /></p>
             </div>
           </div>
           <div className="hero-art" aria-label="A Gao Dehat farm product collection">
@@ -195,43 +72,43 @@ export default function Home() {
             <div className="farm-lines line-one" />
             <div className="farm-lines line-two" />
             <div className="farm-lines line-three" />
-            <div className="field-tag tag-top">Sustainable inputs <i>✦</i></div>
-            <div className="field-tag tag-bottom">Made for Indian farms <i>✦</i></div>
+            <div className="field-tag tag-top"><Copy en="Sustainable inputs" hi="सतत इनपुट" /> <i>✦</i></div>
+            <div className="field-tag tag-bottom"><Copy en="Made for Indian farms" hi="भारतीय खेतों के लिए" /> <i>✦</i></div>
             <div className="hero-product-card">
               <img src="/products/super-power-win.jpg" alt="Super Power Win plant growth promoter" />
-              <div><small>Featured solution</small><strong>Super Power Win</strong></div>
+              <div><small><Copy en="Featured solution" hi="प्रमुख उत्पाद" /></small><strong><Copy en="Super Power Win" hi="सुपर पावर विन" /></strong></div>
             </div>
             <div className="hero-logo-badge"><img src="/gao-dehat-logo.jpeg" alt="" /></div>
           </div>
         </div>
         <div className="hero-bottom shell">
-          <p>Growing with purpose <span>●</span> Nurturing every acre</p>
-          <a href="#about">Scroll to discover <span>↓</span></a>
+          <p><Copy en="Growing with purpose" hi="उद्देश्य के साथ विकास" /> <span>●</span> <Copy en="Nurturing every acre" hi="हर एकड़ का पोषण" /></p>
+          <a href="#about"><Copy en="Scroll to discover" hi="जानने के लिए देखें" /> <span>↓</span></a>
         </div>
       </section>
 
       <section className="intro-section shell" id="about">
-        <div className="section-label"><span>01</span> Our purpose</div>
+        <div className="section-label"><span>01</span> <Copy en="Our purpose" hi="हमारा उद्देश्य" /></div>
         <div className="intro-copy">
-          <p className="intro-kicker">A proud part of Vansh Group</p>
-          <h2>Rooted in the belief that <em>every farmer deserves to grow with confidence.</em></h2>
-          <p>Gao Dehat is an agro-input company from Barabanki, Uttar Pradesh, focused on sustainable farming and farmer prosperity. Our portfolio is designed to support soil fertility, crop performance and a more self-reliant farming future.</p>
+          <p className="intro-kicker"><Copy en="A Vansh Group company" hi="वंश ग्रुप की एक कंपनी" /></p>
+          <h2><Copy en="Rooted in the belief that " hi="इस विश्वास पर आधारित कि " /><em><Copy en="every farmer deserves to grow with confidence." hi="हर किसान को आत्मविश्वास के साथ आगे बढ़ना चाहिए।" /></em></h2>
+          <p><Copy en="Gao Dehat is the agricultural-input and soil-health brand of Vansh Group, based in Barabanki, Uttar Pradesh. Alongside the group’s agro-input, animal-nutrition and bio-agro businesses, we support a more practical and self-reliant farming future." hi="गाँव देहात, बाराबंकी (उत्तर प्रदेश) स्थित वंश ग्रुप का कृषि-इनपुट और मिट्टी-स्वास्थ्य ब्रांड है। ग्रुप के कृषि-इनपुट, पशु-पोषण और बायो-एग्रो व्यवसायों के साथ मिलकर हम अधिक व्यावहारिक और आत्मनिर्भर खेती के भविष्य को सहयोग देते हैं।" /></p>
         </div>
       </section>
 
       <section className="principles">
         <div className="shell">
           <div className="section-heading">
-            <div className="section-label light"><span>02</span> Our approach</div>
-            <h2>Good farming begins<br />with <em>good care.</em></h2>
+            <div className="section-label light"><span>02</span> <Copy en="Our approach" hi="हमारा दृष्टिकोण" /></div>
+            <h2><Copy en="Good farming begins" hi="अच्छी खेती शुरू होती है" /><br /><Copy en="with " hi="" /><em><Copy en="good care." hi="सही देखभाल से।" /></em></h2>
           </div>
           <div className="practice-grid">
-            {practices.map(([number, title, copy]) => (
-              <article className="practice" key={number}>
-                <span className="practice-number">{number}</span>
+            {practices.map((practice) => (
+              <article className="practice" key={practice.number}>
+                <span className="practice-number">{practice.number}</span>
                 <div className="practice-mark">✦</div>
-                <h3>{title}</h3>
-                <p>{copy}</p>
+                <h3><Copy en={practice.title} hi={practice.titleHi} /></h3>
+                <p><Copy en={practice.copy} hi={practice.copyHi} /></p>
               </article>
             ))}
           </div>
@@ -242,44 +119,61 @@ export default function Home() {
         <div className="shell">
           <div className="products-heading">
             <div>
-              <div className="section-label"><span>03</span> Our products</div>
-              <h2>A better season starts<br />with the right <em>input.</em></h2>
+              <div className="section-label"><span>03</span> <Copy en="Our products" hi="हमारे उत्पाद" /></div>
+              <h2><Copy en="A better season starts" hi="बेहतर मौसम शुरू होता है" /><br /><Copy en="with the right " hi="सही " /><em><Copy en="input." hi="इनपुट से।" /></em></h2>
             </div>
-            <p>Seventeen focused solutions for soil nourishment, crop support and healthy plant development.</p>
+            <p><Copy en="Seventeen focused solutions for soil nourishment, crop support and healthy plant development. Open any product to view its information, key benefits and label-guided use." hi="मिट्टी पोषण, फसल सहयोग और स्वस्थ पौध विकास के लिए 17 केंद्रित समाधान। किसी भी उत्पाद को खोलकर उसकी जानकारी, लाभ और लेबल-आधारित उपयोग देखें।" /></p>
           </div>
 
           <div className="product-grid">
             {products.map((product, index) => (
-              <article className={`product-card ${product.className}`} key={product.name}>
+              <a className={`product-card ${product.className}`} href={`/products/${product.slug}`} key={product.slug} aria-label={`View ${product.name} details`}>
                 <div className="product-image-wrap">
-                  <span className="product-index">0{index + 1}</span>
+                  <span className="product-index">{String(index + 1).padStart(2, '0')}</span>
                   <img src={product.image} alt={`${product.name} product packaging`} />
-                  <span className="product-note">{product.note}</span>
+                  <span className="product-note"><Copy en={product.note} hi={product.noteHi} /></span>
                 </div>
                 <div className="product-details">
-                  <p className="product-hindi">{product.hindi}</p>
-                  <h3>{product.name}</h3>
-                  <p>{product.type}</p>
-                  <div><span>{product.pack}</span><span className="arrow">↗</span></div>
+                  <p className="product-hindi"><Copy en={product.nameHi} hi="उत्पाद विवरण" /></p>
+                  <h3><Copy en={product.name} hi={product.nameHi} /></h3>
+                  <p><Copy en={product.type} hi={product.typeHi} /></p>
+                  <div><span><Copy en={product.pack} hi={product.packHi} /></span><span className="arrow">↗</span></div>
                 </div>
-              </article>
+              </a>
             ))}
           </div>
-          <p className="product-footnote">* Product specifications are as shown on the respective product pack. Please use only as directed.</p>
+          <p className="product-footnote"><Copy en="* Product specifications are as shown on the respective product pack. Please use only as directed." hi="* उत्पाद की विशिष्टताएँ संबंधित उत्पाद पैक के अनुसार हैं। कृपया केवल निर्देशानुसार उपयोग करें।" /></p>
+        </div>
+      </section>
+
+      <section className="group-section">
+        <div className="shell group-grid">
+          <div>
+            <div className="section-label"><span>04</span> <Copy en="The Vansh Group network" hi="वंश ग्रुप नेटवर्क" /></div>
+            <h2><Copy en="One group. " hi="एक ग्रुप। " /><em><Copy en="Practical support." hi="व्यावहारिक सहयोग।" /></em></h2>
+          </div>
+          <div className="group-copy">
+            <p><Copy en="Gao Dehat carries Vansh Group’s field-first approach into crop nutrition and soil health. We work alongside the group’s wider capabilities in agro inputs, animal nutrition and bio-agro solutions." hi="गाँव देहात वंश ग्रुप के फील्ड-फर्स्ट दृष्टिकोण को फसल पोषण और मिट्टी स्वास्थ्य में आगे बढ़ाता है। हम ग्रुप की कृषि-इनपुट, पशु-पोषण और बायो-एग्रो समाधान क्षमताओं के साथ काम करते हैं।" /></p>
+            <div className="group-points">
+              <span><Copy en="Agro inputs & soil health" hi="कृषि इनपुट और मिट्टी स्वास्थ्य" /></span>
+              <span><Copy en="Animal nutrition" hi="पशु पोषण" /></span>
+              <span><Copy en="Bio-agro solutions" hi="बायो-एग्रो समाधान" /></span>
+            </div>
+          </div>
         </div>
       </section>
 
       <section className="growth-section">
         <div className="shell growth-wrap">
           <div className="growth-copy">
-            <p className="eyebrow pale"><span /> Healthy plant, better yield</p>
-            <h2>Small drops.<br /><em>Real growth.</em></h2>
-            <p>Super Power Win is our plant growth promoter, made to support plant growth and development, stronger roots, more flowers and fruits, and improved yield and quality.</p>
-            <a className="button button-cream" href="#contact">Ask about this product <span>→</span></a>
+            <p className="eyebrow pale"><span /> <Copy en="Healthy plant, better yield" hi="स्वस्थ पौधा, बेहतर उपज" /></p>
+            <h2><Copy en="Small drops." hi="छोटी बूंदें।" /><br /><em><Copy en="Real growth." hi="सच्ची वृद्धि।" /></em></h2>
+            <p><Copy en="Super Power Win is our plant growth promoter, presented to support plant growth and development, stronger roots, more flowers and fruits, and improved yield and quality." hi="सुपर पावर विन हमारा पादप वृद्धि प्रवर्तक है, जो पौधों की वृद्धि व विकास, मजबूत जड़ों, अधिक फूल व फलों, तथा बेहतर उपज व गुणवत्ता के लिए प्रस्तुत किया गया है।" /></p>
+            <a className="button button-cream" href="/products/super-power-win"><Copy en="View product details" hi="उत्पाद विवरण देखें" /> <span>→</span></a>
           </div>
           <div className="growth-visual">
-            <img src="/products/super-power-win.jpg" alt="Super Power Win product range" />
-            <div className="round-copy">Natural<br /><b>crop care</b><br />for every acre</div>
+            <img src="/products/super-power-win.jpg" alt="Super Power Win product packaging" />
+            <div className="round-copy"><Copy en="Healthy plant" hi="स्वस्थ पौधा" /><br /><b><Copy en="Better yield" hi="बेहतर उपज" /></b></div>
           </div>
         </div>
       </section>
@@ -287,21 +181,21 @@ export default function Home() {
       <section className="contact-section" id="contact">
         <div className="shell contact-grid">
           <div>
-            <div className="section-label"><span>04</span> Connect with us</div>
-            <h2>Let&apos;s grow<br /><em>together.</em></h2>
+            <div className="section-label"><span>05</span> <Copy en="Let’s grow together" hi="आइए साथ बढ़ें" /></div>
+            <h2><Copy en="For product, dealer or" hi="उत्पाद, डीलर या" /><br /><em><Copy en="bulk supply enquiries." hi="बल्क सप्लाई जानकारी के लिए।" /></em></h2>
           </div>
           <div className="contact-details">
-            <p>For product, dealer or customer-care enquiries, reach our team.</p>
+            <p><Copy en="Connect with the Gao Dehat team for product information and partnership enquiries." hi="उत्पाद जानकारी और साझेदारी संबंधी पूछताछ के लिए गाँव देहात टीम से संपर्क करें।" /></p>
             <a className="email-link" href="mailto:info.safalshakti@gmail.com">info.safalshakti@gmail.com <span>↗</span></a>
-            <address>Gaon Dehat Industries Pvt. Ltd.<br />Gata No. 5, Palia Masoodpur Par Dew,<br />Barabanki, Uttar Pradesh — 225001</address>
+            <address>Gata No. 5, Palia Masoodpur Par Dew,<br />Barabanki, Uttar Pradesh – 225001</address>
           </div>
         </div>
       </section>
 
       <footer>
         <div className="shell footer-inner">
-          <a className="footer-brand" href="#home"><img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" /></a>
-          <p>© {new Date().getFullYear()} Gao Dehat Industries Pvt. Ltd.<br />A Vansh Group company.</p>
+          <div className="footer-brand"><img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" /></div>
+          <p>© {new Date().getFullYear()} Gao Dehat Industries Pvt. Ltd.<br /><Copy en="A Vansh Group company" hi="वंश ग्रुप की एक कंपनी" /></p>
           <p className="footer-phrase">ग्राम्य पोषण, समृद्ध किसान</p>
         </div>
       </footer>
