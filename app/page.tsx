@@ -1,5 +1,23 @@
 const products = [
   {
+    name: 'Super Calcium Gold',
+    type: 'Calcium, magnesium & nutrient elements',
+    hindi: 'सुपर कैल्शियम गोल्ड',
+    image: '/products/super-calcium-gold.png',
+    pack: '30 kg pack',
+    className: 'calcium-gold',
+    note: 'Better growth, stronger crops',
+  },
+  {
+    name: 'GIPL 24 Karat',
+    type: 'Gibberellic Acid 0.001% SL · Plant growth regulator',
+    hindi: 'जीआईपीएल 24 कैरट',
+    image: '/products/gipl-24-karat.jpeg',
+    pack: '100 ml',
+    className: 'gipl',
+    note: 'Plant growth regulator',
+  },
+  {
     name: 'Green Force',
     type: 'Phosphate Rich Organic Manure',
     hindi: 'ग्रीन फोर्स',
@@ -34,6 +52,96 @@ const products = [
     pack: '50 kg pack',
     className: 'potash',
     note: 'K₂O · 14.5%',
+  },
+  {
+    name: 'Surya Super Zinc',
+    type: 'Water-soluble fertilizer for foliar spray',
+    hindi: 'सूर्या सुपर जिंक',
+    image: '/products/surya-super-zinc.jpeg',
+    pack: '250 g',
+    className: 'surya-zinc',
+    note: '100% water soluble',
+  },
+  {
+    name: 'Zinc Super Gold',
+    type: 'Micronutrients fertilizer · Micronutrients + Sulphur',
+    hindi: 'जिंक सुपर गोल्ड',
+    image: '/products/zinc-super-gold.jpeg',
+    pack: 'Crop & flower yield',
+    className: 'zinc-gold',
+    note: 'Micronutrients + sulphur',
+  },
+  {
+    name: 'Mono Zinc',
+    type: 'Zinc Sulphate Monohydrate · Zn 33% min · S 15% min',
+    hindi: 'मोनो जिंक',
+    image: '/products/mono-zinc.jpeg',
+    pack: 'Agriculture grade',
+    className: 'mono-zinc',
+    note: 'Zinc sulphate monohydrate',
+  },
+  {
+    name: 'Magnesium Gold',
+    type: 'Magnesium 9.5% · Sulphate 12%',
+    hindi: 'मैग्नीशियम गोल्ड',
+    image: '/products/magnesium-gold.jpeg',
+    pack: 'Crop & flower yield',
+    className: 'magnesium-gold',
+    note: 'Magnesium + sulphate',
+  },
+  {
+    name: 'Fertile Blossom High Zinc',
+    type: 'Micronutrients fertilizer · Micronutrients + Sulphur',
+    hindi: 'फर्टाइल ब्लॉसम हाई जिंक',
+    image: '/products/fertile-blossom-high-zinc.jpeg',
+    pack: 'Crop & flower yield',
+    className: 'blossom-zinc',
+    note: 'Micronutrients + sulphur',
+  },
+  {
+    name: 'Boron Gold',
+    type: 'Sodium Tetraborate · Boron (B) 10.5% w/w min',
+    hindi: 'बोरॉन गोल्ड',
+    image: '/products/boron-gold.jpeg',
+    pack: 'For soil application',
+    className: 'boron-gold',
+    note: 'Micronutrient fertilizer',
+  },
+  {
+    name: 'Micro Force',
+    type: 'Ferrous Sulphate · 19%',
+    hindi: 'माइक्रो फोर्स',
+    image: '/products/micro-force.jpeg',
+    pack: 'Micronutrient fertilizer',
+    className: 'micro-force',
+    note: 'Ferrous sulphate',
+  },
+  {
+    name: 'Black Gold',
+    type: 'Organic growth stimulator · Humic 98% w/w',
+    hindi: 'ब्लैक गोल्ड',
+    image: '/products/black-gold.jpeg',
+    pack: 'Organic crop support',
+    className: 'black-gold',
+    note: 'Humic 98% w/w',
+  },
+  {
+    name: 'Bhumi Pakar',
+    type: 'Nitro 35% + Humic Acid 15% + Amino Acid 10%',
+    hindi: 'भूमि पकार',
+    image: '/products/bhumihar.jpeg',
+    pack: 'Biostimulant product',
+    className: 'bhumihar',
+    note: 'Biostimulant',
+  },
+  {
+    name: 'Haryali Gold',
+    type: 'Chelated Iron as Fe-EDTA 12%',
+    hindi: 'हरियाली गोल्ड',
+    image: '/products/haryali-gold.jpeg',
+    pack: 'Drip & foliar application',
+    className: 'haryali-gold',
+    note: 'Chelated iron',
   },
   {
     name: 'Super Power Win',
@@ -137,7 +245,7 @@ export default function Home() {
               <div className="section-label"><span>03</span> Our products</div>
               <h2>A better season starts<br />with the right <em>input.</em></h2>
             </div>
-            <p>Five focused solutions for soil nourishment, crop support and healthy plant development.</p>
+            <p>Seventeen focused solutions for soil nourishment, crop support and healthy plant development.</p>
           </div>
 
           <div className="product-grid">
