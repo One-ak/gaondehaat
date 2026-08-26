@@ -128,7 +128,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <ul className="benefit-list">
               {product.benefits.map((benefit, index) => (
                 <li key={benefit}>
-                  <span>0{index + 1}</span>
+                  <span className="benefit-number">0{index + 1}</span>
                   <Copy en={benefit} hi={product.benefitsHi[index]} />
                 </li>
               ))}
@@ -141,7 +141,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <ol className="use-list">
               {standardUse.en.map((instruction, index) => (
                 <li key={instruction}>
-                  <span>{index + 1}</span>
+                  <span className="step-number">{index + 1}</span>
                   <Copy en={instruction} hi={standardUse.hi[index]} />
                 </li>
               ))}
