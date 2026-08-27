@@ -136,8 +136,8 @@ export default function Home() {
           <p className="product-footnote"><Copy en="* Product specifications are as shown on the respective product pack. Please use only as directed." hi="* उत्पाद की विशिष्टताएँ संबंधित उत्पाद पैक के अनुसार हैं। कृपया केवल निर्देशानुसार उपयोग करें।" /></p>
           <div className="catalogue-cta">
             <div>
-              <p><Copy en="Need an easy product list?" hi="उत्पादों की आसान सूची चाहिए?" /></p>
-              <strong><Copy en="Download the Gao Dehat catalogue." hi="गाँव देहात कैटलॉग डाउनलोड करें।" /></strong>
+              <p><Copy en="17 dedicated product profiles" hi="17 समर्पित उत्पाद प्रोफाइल" /></p>
+              <strong><Copy en="Benefits, packing and label-guided use for every product." hi="हर उत्पाद के लिए लाभ, पैकिंग और लेबल-आधारित उपयोग।" /></strong>
             </div>
             <a href="/gao-dehat-product-catalogue.pdf" download><Copy en="Download catalogue" hi="कैटलॉग डाउनलोड करें" /> <span>↓</span></a>
           </div>

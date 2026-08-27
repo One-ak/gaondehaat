@@ -139,6 +139,21 @@ footer.site-footer .footer-phrase { display: block; color: #e4efdd !important; f
 .trust-card h3 { color: white; font-size: 24px; letter-spacing: -.04em; margin: 35px 0 10px; }
 .trust-card p { color: #d8ead3; font-size: 13px; line-height: 1.6; margin: 0; }
 
+/* Product-range polish: consistent card rhythm, clearer focus and tactile feedback. */
+.product-card { border: 1px solid rgba(23, 88, 58, .09); box-shadow: 0 5px 16px rgba(17, 62, 45, .045); overflow: hidden; }
+.product-card:hover { box-shadow: 0 18px 34px rgba(17, 62, 45, .14); }
+.product-card:focus-visible { outline: 3px solid #e74632; outline-offset: 3px; }
+.product-image-wrap { isolation: isolate; }
+.product-image-wrap::after { background: linear-gradient(135deg, rgba(255,255,255,.22), transparent 42%); content: ""; inset: 0; pointer-events: none; position: absolute; z-index: 1; }
+.product-image-wrap img { position: relative; z-index: 0; filter: drop-shadow(0 10px 9px rgba(20, 71, 53, .08)); }
+.power-win .product-image-wrap img { filter: none; }
+.product-details { display: flex; flex-direction: column; min-height: 165px; }
+.product-details h3 { line-height: 1.05; min-height: 2.1em; }
+.product-details > div { margin-top: auto; }
+.catalogue-cta { box-shadow: 0 10px 24px rgba(16, 71, 53, .05); }
+.crop-guide-card, .trust-card { transition: transform .25s ease, box-shadow .25s ease; }
+.crop-guide-card:hover, .trust-card:hover { box-shadow: 0 15px 28px rgba(16, 71, 53, .12); transform: translateY(-4px); }
+
 @media (max-width: 800px) {
   footer.site-footer .footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 38px 0 26px; }
   footer.site-footer .footer-brand { flex-basis: 70px; width: 70px; height: 70px; }
@@ -169,4 +184,10 @@ footer.site-footer .footer-phrase { display: block; color: #e4efdd !important; f
   .crop-guide-card { min-height: 250px; }
   .trust-grid { gap: 1px; }
   .trust-card { min-height: auto; }
+  .product-details { min-height: 155px; }
+}
+
+@media (max-width: 420px) {
+  .product-details { min-height: 0; }
+  .product-details h3 { min-height: 0; }
 }

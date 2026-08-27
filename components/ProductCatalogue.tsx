@@ -82,7 +82,13 @@ export default function ProductCatalogue({ products }: { products: Product[] }) 
           <Link className={`product-card ${product.className}`} href={`/products/${product.slug}`} key={product.slug} aria-label={`View ${product.name} details`}>
             <div className="product-image-wrap">
               <span className="product-index">{String(index + 1).padStart(2, '0')}</span>
-              <img src={product.image} alt={`${product.name} product packaging`} loading="lazy" decoding="async" />
+              <img
+                src={product.image}
+                alt={`${product.name} product packaging`}
+                loading={index < 3 ? 'eager' : 'lazy'}
+                fetchPriority={index < 3 ? 'high' : 'auto'}
+                decoding="async"
+              />
               <span className="product-note"><Copy en={product.note} hi={product.noteHi} /></span>
             </div>
             <div className="product-details">
