@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import LanguageToggle from '../../../components/LanguageToggle';
+import SiteFooter from '../../../components/SiteFooter';
 import { getProduct, products, standardUse } from '../../product-data';
+import { createWhatsAppLink } from '../../site-contact';
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -55,7 +57,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const enquiryLink = `mailto:info.safalshakti@gmail.com?subject=${encodeURIComponent(`Product enquiry — ${product.name}`)}`;
+  const enquiryLink = createWhatsAppLink(
+    `Hello Gao Dehat Team,\n\nI would like to enquire about ${product.name} (${product.nameHi}).\n\nPlease share product information, availability and pricing.\n\nThank you.`
+  );
 
   return (
     <main className="product-page">
@@ -69,7 +73,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
         <div className="nav-actions">
           <LanguageToggle />
-          <a className="detail-enquiry" href={enquiryLink}><Copy en="Send enquiry" hi="पूछताछ भेजें" /> <span>↗</span></a>
+          <a className="detail-enquiry" href={enquiryLink} target="_blank" rel="noreferrer"><Copy en="WhatsApp enquiry" hi="व्हाट्सऐप पूछताछ" /> <span>↗</span></a>
         </div>
       </nav>
 
@@ -91,7 +95,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <a href="#benefits"><Copy en="Key benefits" hi="मुख्य लाभ" /></a>
                 <a href="#how-to-use"><Copy en="How to use" hi="कैसे उपयोग करें" /></a>
               </div>
-              <a className="button button-dark" href={enquiryLink}><Copy en="Enquire about this product" hi="इस उत्पाद के लिए पूछताछ करें" /> <span>→</span></a>
+              <a className="button button-dark" href={enquiryLink} target="_blank" rel="noreferrer"><Copy en="Enquire on WhatsApp" hi="व्हाट्सऐप पर पूछताछ करें" /> <span>→</span></a>
             </div>
           </div>
         </div>
@@ -160,18 +164,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className="assurance-points">
             <p><Copy en="Product information that is clear, practical and grounded in the product pack." hi="स्पष्ट, व्यावहारिक और उत्पाद पैक पर आधारित जानकारी।" /></p>
             <p><Copy en="For dealer, distribution or bulk-supply requirements, contact the Gao Dehat team." hi="डीलर, वितरण या बल्क-सप्लाई की आवश्यकता के लिए गाँव देहात टीम से संपर्क करें।" /></p>
-            <a className="button button-cream" href={enquiryLink}><Copy en="Contact Gao Dehat" hi="गाँव देहात से संपर्क करें" /> <span>→</span></a>
+            <a className="button button-cream" href={enquiryLink} target="_blank" rel="noreferrer"><Copy en="Contact on WhatsApp" hi="व्हाट्सऐप पर संपर्क करें" /> <span>→</span></a>
           </div>
         </div>
       </section>
 
-      <footer>
-        <div className="shell footer-inner">
-          <div className="footer-brand"><img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" /></div>
-          <p>© {new Date().getFullYear()} Gao Dehat Industries Pvt. Ltd.<br /><Copy en="A Vansh Group company" hi="वंश ग्रुप की एक कंपनी" /></p>
-          <Link className="footer-phrase" href="/#products"><Copy en="View all products" hi="सभी उत्पाद देखें" /> ↗</Link>
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

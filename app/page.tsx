@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import LanguageToggle from '../components/LanguageToggle';
+import SiteFooter from '../components/SiteFooter';
 import { products } from './product-data';
+import { COMPANY_EMAIL, generalWhatsAppLink, WHATSAPP_DISPLAY_NUMBER } from './site-contact';
 
 function Copy({ en, hi }: { en: string; hi: string }) {
   return (
@@ -187,19 +189,14 @@ export default function Home() {
           </div>
           <div className="contact-details">
             <p><Copy en="Connect with the Gao Dehat team for product information and partnership enquiries." hi="उत्पाद जानकारी और साझेदारी संबंधी पूछताछ के लिए गाँव देहात टीम से संपर्क करें।" /></p>
-            <a className="email-link" href="mailto:info.safalshakti@gmail.com">info.safalshakti@gmail.com <span>↗</span></a>
+            <a className="email-link whatsapp-link" href={generalWhatsAppLink} target="_blank" rel="noreferrer"><Copy en={`WhatsApp: ${WHATSAPP_DISPLAY_NUMBER}`} hi={`व्हाट्सऐप: ${WHATSAPP_DISPLAY_NUMBER}`} /> <span>↗</span></a>
+            <a className="contact-email" href={`mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a>
             <address>Gata No. 5, Palia Masoodpur Par Dew,<br />Barabanki, Uttar Pradesh – 225001</address>
           </div>
         </div>
       </section>
 
-      <footer>
-        <div className="shell footer-inner">
-          <div className="footer-brand"><img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" /></div>
-          <p>© {new Date().getFullYear()} Gao Dehat Industries Pvt. Ltd.<br /><Copy en="A Vansh Group company" hi="वंश ग्रुप की एक कंपनी" /></p>
-          <p className="footer-phrase">ग्राम्य पोषण, समृद्ध किसान</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

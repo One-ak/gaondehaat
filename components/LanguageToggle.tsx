@@ -9,20 +9,20 @@ export default function LanguageToggle() {
 
   useEffect(() => {
     const saved = window.localStorage.getItem('gao-dehat-language');
-    const nextLanguage: Language = saved === 'hi' ? 'hi' : 'en';
-    document.documentElement.dataset.language = nextLanguage;
-    document.documentElement.lang = nextLanguage;
-    if (nextLanguage !== 'en') {
-      const frame = window.requestAnimationFrame(() => setLanguage(nextLanguage));
+    if (saved === 'hi') {
+      const frame = window.requestAnimationFrame(() => setLanguage('hi'));
       return () => window.cancelAnimationFrame(frame);
     }
   }, []);
 
+  useEffect(() => {
+    document.documentElement.dataset.language = language;
+    document.documentElement.lang = language;
+  }, [language]);
+
   function chooseLanguage(nextLanguage: Language) {
-    setLanguage(nextLanguage);
     window.localStorage.setItem('gao-dehat-language', nextLanguage);
-    document.documentElement.dataset.language = nextLanguage;
-    document.documentElement.lang = nextLanguage;
+    setLanguage(nextLanguage);
   }
 
   return (

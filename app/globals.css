@@ -58,3 +58,33 @@ html[data-language='hi'] .copy-en { display: none !important; }html[data-languag
 @media (max-width: 800px) { .nav-actions { gap: 10px; }.nav-cta { display: none; }.group-section { padding: 78px 0; }.group-grid, .assurance-grid { grid-template-columns: 1fr; gap: 35px; }.group-section h2, .detail-content h2, .detail-assurance h2 { font-size: clamp(42px, 12vw, 63px); }.group-points { grid-template-columns: 1fr; }.group-points span + span { border-left: 0; padding-left: 0; border-top: 1px solid #c7b994; padding-top: 12px; }.detail-nav { min-height: 84px; }.detail-nav-links { display: none; }.detail-enquiry { display: none; }.detail-hero { padding: 24px 0 55px; }.detail-hero-grid { grid-template-columns: 1fr; gap: 42px; margin-top: 30px; }.detail-product-image { min-height: 340px; padding: 20px; }.detail-product-image img, .detail-product-image.power-win img { height: 310px; max-height: 310px; }.detail-copy h1 { font-size: clamp(48px, 14vw, 71px); }.detail-type { font-size: 15px; }.detail-facts { grid-template-columns: 1fr; }.detail-facts article { min-height: auto; border-left: 0; border-top: 1px solid rgba(214,236,186,.27); padding: 24px 0; }.detail-facts article:first-child { border-top: 0; }.detail-facts p { margin: 16px 0 5px; }.detail-content { padding: 78px 0; }.detail-info-grid { grid-template-columns: 1fr; margin-top: 42px; }.detail-panel { padding: 26px 22px; }.detail-assurance { padding: 78px 0; }.assurance-points { max-width: none; } }
 @media (max-width: 420px) { .hero-actions { gap: 16px; }.button { gap: 15px; padding: 13px; }.text-link { font-size: 11px; }.product-grid { grid-template-columns: 1fr; }.product-card, .product-card:nth-child(4), .product-card:nth-child(5), .power-win, .product-card:last-child { grid-column: auto; }.product-image-wrap, .power-win .product-image-wrap { aspect-ratio: 1.3 / 1; }.product-details > p:not(.product-hindi) { min-height: auto; }.hero-proof { padding-top: 27px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
+
+/* Contact and footer refinements */
+.contact-email { display: block; width: fit-content; margin-top: 12px; color: #426451; font-size: 13px; font-weight: 700; border-bottom: 1px solid #8ca685; padding-bottom: 2px; }
+.contact-email:hover { color: var(--clay); }
+
+footer.site-footer { background: #0e392a; color: #d8ead3; }
+footer.site-footer .footer-inner { display: grid; grid-template-columns: minmax(250px, 1.15fr) minmax(130px, .65fr) minmax(255px, 1fr); align-items: start; gap: 42px; min-height: 0; padding: 44px 0 28px; }
+footer.site-footer .footer-brand-block { display: flex; align-items: center; gap: 15px; }
+footer.site-footer .footer-brand { display: grid; flex: 0 0 78px; width: 78px; height: 78px; place-items: center; overflow: hidden; padding: 4px; border: 2px solid #e4b64a; border-radius: 50%; background: white; box-shadow: 0 4px 12px rgba(0,0,0,.18); }
+footer.site-footer .footer-brand img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; mix-blend-mode: normal; filter: none; }
+footer.site-footer .footer-company p { margin: 0; }
+footer.site-footer .footer-company-name { margin-bottom: 4px !important; color: #f5f4e9 !important; font-size: 15px !important; font-weight: 800; letter-spacing: -.02em !important; }
+footer.site-footer .footer-section-title { margin: 0 0 13px; color: #f5cf69 !important; font-size: 10px !important; font-weight: 800; letter-spacing: .13em !important; text-transform: uppercase; }
+footer.site-footer .footer-links { display: grid; gap: 9px; align-content: start; }
+footer.site-footer .footer-links a, footer.site-footer .footer-contact a { width: fit-content; color: #d8ead3; font-size: 12px; line-height: 1.4; }
+footer.site-footer .footer-links a:hover, footer.site-footer .footer-contact a:hover { color: #f5cf69; }
+footer.site-footer .footer-contact { display: grid; gap: 9px; align-content: start; }
+footer.site-footer .footer-whatsapp { display: inline-flex; align-items: center; gap: 7px; color: #f5cf69 !important; font-weight: 800; }
+footer.site-footer .footer-whatsapp span { font-size: 16px; line-height: 1; }
+footer.site-footer .footer-contact address { margin-top: 4px; color: #aec5af; font-size: 11px; font-style: normal; line-height: 1.6; }
+footer.site-footer .footer-bottom { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 20px; border-top: 1px solid rgba(216,234,211,.2); }
+footer.site-footer .footer-bottom p { margin: 0; }
+footer.site-footer .footer-phrase { display: block; color: #e4efdd !important; font-size: 12px !important; }
+
+@media (max-width: 800px) {
+  footer.site-footer .footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 38px 0 26px; }
+  footer.site-footer .footer-brand { flex-basis: 70px; width: 70px; height: 70px; }
+  footer.site-footer .footer-bottom { align-items: flex-start; flex-direction: column; gap: 8px; }
+  footer.site-footer .footer-phrase { display: block; }
+}
