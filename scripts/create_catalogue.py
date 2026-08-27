@@ -5,7 +5,9 @@ from PIL import Image
 from reportlab.lib.colors import HexColor, white
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.pdfmetrics import stringWidth
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
 
@@ -23,18 +25,44 @@ CLAY = HexColor("#E74632")
 GOLD = HexColor("#F1C95B")
 MUTED = HexColor("#557260")
 LINE = HexColor("#D7E3D3")
+SERIF = "GaoSerif"
+SERIF_BOLD = "GaoSerifBold"
 
 CATEGORY_DATA = {
-    "soil": ("SOIL HEALTH", "Soil nutrition and field-preparation support", HexColor("#DCEBC7")),
-    "growth": ("PLANT GROWTH", "Plant development and crop-growth support", HexColor("#F6D478")),
-    "micro": ("MICRONUTRIENTS", "Focused micronutrient product profiles", HexColor("#D8EAF0")),
+    "soil": {
+        "label": "SOIL HEALTH",
+        "description": "Soil nutrition and field-preparation support",
+        "accent": HexColor("#B9D98A"),
+        "wash": HexColor("#EDF5E0"),
+        "deep": HexColor("#3B6E46"),
+    },
+    "growth": {
+        "label": "PLANT GROWTH",
+        "description": "Plant development and crop-growth support",
+        "accent": HexColor("#F3C95C"),
+        "wash": HexColor("#FFF3D3"),
+        "deep": HexColor("#8A5B18"),
+    },
+    "micro": {
+        "label": "MICRONUTRIENTS",
+        "description": "Focused micronutrient product profiles",
+        "accent": HexColor("#B9DDE8"),
+        "wash": HexColor("#EAF4F6"),
+        "deep": HexColor("#2B6672"),
+    },
 }
 SOIL_PRODUCTS = {"green-force", "super-baan", "dop-prom", "potash", "black-gold", "bhumi-pakar"}
 GROWTH_PRODUCTS = {"super-calcium-gold", "gipl-24-karat", "super-power-win"}
 
 
+def register_fonts():
+    """Use the installed Georgia faces for an editorial, non-generic catalogue feel."""
+    font_root = Path("/System/Library/Fonts/Supplemental")
+    pdfmetrics.registerFont(TTFont(SERIF, str(font_root / "Georgia.ttf")))
+    pdfmetrics.registerFont(TTFont(SERIF_BOLD, str(font_root / "Georgia Bold.ttf")))
+
+
 def safe_text(value):
-    """Keep catalogue text compatible with the built-in PDF fonts."""
     replacements = {
         "·": " - ",
         "×": "x",
@@ -68,7 +96,6 @@ def parse_products():
         benefits_match = re.search(r"\bbenefits:\s*\[([^\]]+)\]", block, flags=re.S)
         if not benefits_match:
             raise ValueError("Missing benefits in product data")
-        benefits = re.findall(r"'([^']*)'", benefits_match.group(1))
         product = {
             "slug": prop(block, "slug"),
             "name": prop(block, "name"),
@@ -76,7 +103,7 @@ def parse_products():
             "image": prop(block, "image"),
             "pack": prop(block, "pack"),
             "overview": prop(block, "overview"),
-            "benefits": benefits,
+            "benefits": re.findall(r"'([^']*)'", benefits_match.group(1)),
             "suitable": prop(block, "suitable"),
         }
         product["category"] = "soil" if product["slug"] in SOIL_PRODUCTS else "growth" if product["slug"] in GROWTH_PRODUCTS else "micro"
@@ -87,6 +114,10 @@ def parse_products():
     return products
 
 
+def product_by_slug(products, slug):
+    return next(product for product in products if product["slug"] == slug)
+
+
 def pdf_image(source):
     """Create compact display assets so the downloadable catalogue stays lightweight."""
     IMAGE_CACHE.mkdir(parents=True, exist_ok=True)
@@ -95,10 +126,10 @@ def pdf_image(source):
         return destination
     with Image.open(source) as image:
         image = image.convert("RGBA")
-        image.thumbnail((900, 900), Image.Resampling.LANCZOS)
+        image.thumbnail((1000, 1000), Image.Resampling.LANCZOS)
         background = Image.new("RGB", image.size, "white")
         background.paste(image, mask=image.getchannel("A"))
-        background.save(destination, "JPEG", quality=82, optimize=True, progressive=True)
+        background.save(destination, "JPEG", quality=84, optimize=True, progressive=True)
     return destination
 
 
@@ -159,278 +190,289 @@ def draw_logo(c, x, y, size):
         draw_image_contain(c, logo, x + 1.5 * mm, y + 1.5 * mm, size - 3 * mm, size - 3 * mm)
 
 
+def draw_pack_card(c, image_path, x, y, width, height, accent, angle=0):
+    """A slightly tilted product-pack card used as an editorial visual accent."""
+    c.saveState()
+    c.translate(x + width / 2, y + height / 2)
+    c.rotate(angle)
+    c.translate(-width / 2, -height / 2)
+    c.setFillColor(white)
+    c.roundRect(0, 0, width, height, 4 * mm, stroke=0, fill=1)
+    c.setStrokeColor(accent)
+    c.setLineWidth(1.1)
+    c.roundRect(0, 0, width, height, 4 * mm, stroke=1, fill=0)
+    draw_image_contain(c, image_path, 5 * mm, 7 * mm, width - 10 * mm, height - 16 * mm)
+    c.setFillColor(INK)
+    c.roundRect(5 * mm, 5 * mm, 27 * mm, 6.2 * mm, 1.2 * mm, stroke=0, fill=1)
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 5.6)
+    c.drawCentredString(18.5 * mm, 7.1 * mm, "GAO DEHAT")
+    c.restoreState()
+
+
 def footer(c, page, total):
-    c.setStrokeColor(LINE)
-    c.setLineWidth(0.7)
+    c.setStrokeColor(HexColor("#B8D0BA"))
+    c.setLineWidth(0.65)
     c.line(MARGIN, 15 * mm, W - MARGIN, 15 * mm)
     c.setFillColor(MUTED)
-    c.setFont("Helvetica-Bold", 7.2)
+    c.setFont("Helvetica-Bold", 7)
     c.drawString(MARGIN, 9.2 * mm, "GAO DEHAT  |  PRODUCT CATALOGUE")
-    c.drawRightString(W - MARGIN, 9.2 * mm, f"PRODUCT PROFILE  {page:02d} / {total:02d}")
+    c.drawRightString(W - MARGIN, 9.2 * mm, f"PROFILE  {page:02d} / {total:02d}")
 
 
-def section_header(c, category, number, total):
-    label, _descriptor, accent = CATEGORY_DATA[category]
-    c.setFillColor(CREAM)
-    c.rect(0, 0, W, H, stroke=0, fill=1)
-    c.setFillColor(INK)
-    c.rect(0, H - 28 * mm, W, 28 * mm, stroke=0, fill=1)
-    draw_logo(c, MARGIN, H - 24 * mm, 17 * mm)
-    c.setFillColor(white)
-    c.setFont("Helvetica-Bold", 8.5)
-    c.drawString(MARGIN + 22 * mm, H - 16 * mm, "GAO DEHAT PRODUCT CATALOGUE")
-    c.setFillColor(accent)
-    c.setFont("Helvetica-Bold", 7.5)
-    c.drawRightString(W - MARGIN, H - 16 * mm, f"{label}  ·  PROFILE {number:02d}")
-    footer(c, number + 2, total)
-    return label, accent
-
-
-def draw_cover(c, total_products):
+def draw_cover(c, products):
     c.setFillColor(INK)
     c.rect(0, 0, W, H, stroke=0, fill=1)
-    c.setFillColor(HexColor("#DDEEC6"))
-    c.circle(W - 6 * mm, H - 7 * mm, 79 * mm, stroke=0, fill=1)
     c.setFillColor(LEAF)
-    c.circle(W - 6 * mm, H - 7 * mm, 60 * mm, stroke=0, fill=1)
+    c.circle(W - 13 * mm, H - 21 * mm, 72 * mm, stroke=0, fill=1)
+    c.setStrokeColor(GOLD)
+    c.setLineWidth(2)
+    c.arc(104 * mm, H - 103 * mm, W + 52 * mm, H + 35 * mm, startAng=133, extent=167)
+    c.setStrokeColor(HexColor("#BBD889"))
+    c.setLineWidth(1.1)
+    c.arc(96 * mm, H - 111 * mm, W + 60 * mm, H + 27 * mm, startAng=132, extent=169)
+    draw_logo(c, MARGIN, H - 52 * mm, 39 * mm)
+
     c.setFillColor(GOLD)
-    c.circle(W - 6 * mm, H - 7 * mm, 41 * mm, stroke=0, fill=1)
-    draw_logo(c, MARGIN, H - 48 * mm, 38 * mm)
-    c.setFillColor(GOLD)
-    c.setFont("Helvetica-Bold", 9.5)
-    c.drawString(MARGIN, H - 70 * mm, "PRODUCT CATALOGUE")
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(MARGIN, H - 76 * mm, "2026  |  PRODUCT CATALOGUE")
     c.setFillColor(white)
-    c.setFont("Helvetica-Bold", 38)
-    c.drawString(MARGIN, H - 94 * mm, "Gao Dehat")
-    c.setFont("Helvetica-Oblique", 30)
-    c.drawString(MARGIN, H - 112 * mm, "for better crop care.")
+    c.setFont(SERIF_BOLD, 39)
+    c.drawString(MARGIN, H - 103 * mm, "Gao Dehat")
+    c.setFont(SERIF, 29)
+    c.drawString(MARGIN, H - 122 * mm, "grow with care.")
     draw_wrapped(
         c,
-        f"{total_products} focused agricultural product profiles for soil nourishment, plant development and micronutrient support.",
+        "An agricultural range created for soil nourishment, confident crop development and practical nutrient support.",
         MARGIN,
-        H - 136 * mm,
-        105 * mm,
-        size=12.5,
-        leading=17,
+        H - 143 * mm,
+        100 * mm,
+        font="Helvetica",
+        size=11,
+        leading=15,
         color=HexColor("#D8EAD3"),
         max_lines=4,
     )
-    c.setFillColor(CREAM)
-    c.roundRect(MARGIN, 43 * mm, W - 2 * MARGIN, 47 * mm, 4 * mm, stroke=0, fill=1)
+
+    green_force = product_by_slug(products, "green-force")
+    gipl = product_by_slug(products, "gipl-24-karat")
+    potash = product_by_slug(products, "potash")
+    draw_pack_card(c, PUBLIC / green_force["image"].lstrip("/"), 121 * mm, 128 * mm, 50 * mm, 70 * mm, HexColor("#F4CF6B"), -8)
+    draw_pack_card(c, PUBLIC / gipl["image"].lstrip("/"), 140 * mm, 83 * mm, 52 * mm, 68 * mm, HexColor("#D8E8C5"), 6)
+    draw_pack_card(c, PUBLIC / potash["image"].lstrip("/"), 107 * mm, 63 * mm, 49 * mm, 66 * mm, HexColor("#EBD5A4"), -3)
+
+    c.setFillColor(HexColor("#F8F5EC"))
+    c.roundRect(MARGIN, 42 * mm, 93 * mm, 43 * mm, 5 * mm, stroke=0, fill=1)
+    c.setFillColor(CLAY)
+    c.setFont("Helvetica-Bold", 7.5)
+    c.drawString(MARGIN + 8 * mm, 75 * mm, "THE GAO DEHAT PROMISE")
     c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 9)
-    c.drawString(MARGIN + 11 * mm, 78 * mm, "CLEAR INFORMATION. LABEL-GUIDED USE.")
-    c.setFont("Helvetica", 10)
-    c.drawString(MARGIN + 11 * mm, 65 * mm, "WhatsApp: +91 91967 02525")
-    c.drawString(MARGIN + 11 * mm, 54 * mm, "Email: Gaondehat31@gmail.com")
-    c.setFillColor(HexColor("#B5D9AA"))
-    c.setFont("Helvetica-Bold", 8.2)
-    c.drawCentredString(W / 2, 24 * mm, "A VANSH GROUP COMPANY  |  GAO DEHAT INDUSTRIES PVT. LTD.")
+    c.setFont(SERIF_BOLD, 16)
+    c.drawString(MARGIN + 8 * mm, 62 * mm, "Clear details. Better choices.")
+    c.setFont("Helvetica", 8.5)
+    c.drawString(MARGIN + 8 * mm, 51 * mm, "17 product profiles with pack details and label-guided use.")
+    c.setFillColor(HexColor("#CDE1B5"))
+    c.setFont("Helvetica-Bold", 7.7)
+    c.drawCentredString(W / 2, 23 * mm, "A VANSH GROUP COMPANY  |  GAO DEHAT INDUSTRIES PVT. LTD.")
     c.showPage()
+
+
+def draw_category_card(c, category, products, x, y, width, height):
+    style = CATEGORY_DATA[category]
+    c.setFillColor(style["wash"])
+    c.roundRect(x, y, width, height, 5 * mm, stroke=0, fill=1)
+    c.setFillColor(style["deep"])
+    c.roundRect(x, y + height - 13 * mm, width, 13 * mm, 5 * mm, stroke=0, fill=1)
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 6.8)
+    c.drawString(x + 7 * mm, y + height - 8.6 * mm, style["label"])
+    c.setFillColor(INK)
+    c.setFont(SERIF_BOLD, 18)
+    c.drawString(x + 7 * mm, y + height - 25 * mm, style["label"].title())
+    draw_wrapped(c, style["description"], x + 7 * mm, y + height - 34 * mm, width - 14 * mm, size=7.6, leading=9.5, color=MUTED, max_lines=2)
+    for index, product in enumerate(products):
+        row_y = y + height - 54 * mm - index * 9.3 * mm
+        c.setStrokeColor(HexColor("#C9D8C7"))
+        c.line(x + 7 * mm, row_y - 3 * mm, x + width - 7 * mm, row_y - 3 * mm)
+        c.setFillColor(CLAY)
+        c.setFont("Helvetica-Bold", 6.2)
+        c.drawString(x + 7 * mm, row_y, f"{index + 1:02d}")
+        c.setFillColor(INK)
+        c.setFont("Helvetica-Bold", 7.3)
+        c.drawString(x + 15 * mm, row_y, safe_text(product["name"]))
+    draw_image_contain(c, PUBLIC / products[0]["image"].lstrip("/"), x + width - 34 * mm, y + 7 * mm, 27 * mm, 33 * mm)
 
 
 def draw_catalogue_guide(c, products, total):
     c.setFillColor(CREAM)
     c.rect(0, 0, W, H, stroke=0, fill=1)
     c.setFillColor(INK)
-    c.rect(0, H - 28 * mm, W, 28 * mm, stroke=0, fill=1)
-    draw_logo(c, MARGIN, H - 24 * mm, 17 * mm)
+    c.rect(0, H - 25 * mm, W, 25 * mm, stroke=0, fill=1)
+    draw_logo(c, MARGIN, H - 22 * mm, 15 * mm)
     c.setFillColor(white)
-    c.setFont("Helvetica-Bold", 8.5)
-    c.drawString(MARGIN + 22 * mm, H - 16 * mm, "GAO DEHAT PRODUCT CATALOGUE")
+    c.setFont("Helvetica-Bold", 8)
+    c.drawString(MARGIN + 20 * mm, H - 14.5 * mm, "GAO DEHAT PRODUCT CATALOGUE")
     c.setFillColor(GOLD)
-    c.setFont("Helvetica-Bold", 7.5)
-    c.drawRightString(W - MARGIN, H - 16 * mm, "CATALOGUE GUIDE")
+    c.drawRightString(W - MARGIN, H - 14.5 * mm, "START HERE")
     footer(c, 2, total)
 
     c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 29)
-    c.drawString(MARGIN, H - 49 * mm, "A profile for every product.")
+    c.setFont(SERIF_BOLD, 29)
+    c.drawString(MARGIN, H - 46 * mm, "Choose by crop need.")
+    c.setFillColor(CLAY)
+    c.setFont(SERIF, 18)
+    c.drawString(MARGIN, H - 57 * mm, "Then use the product label with care.")
     draw_wrapped(
         c,
-        "Each following page puts product-pack information, benefits and label-guided use in one easy reference.",
+        "The range is organised into three clear product families. Every profile includes the same practical information for easy comparison.",
         MARGIN,
-        H - 61 * mm,
-        166 * mm,
-        size=10.8,
-        leading=14,
+        H - 70 * mm,
+        161 * mm,
+        size=9.3,
+        leading=12.5,
         color=MUTED,
         max_lines=3,
     )
 
-    cards = [
-        ("01", "PRODUCT SNAPSHOT", "Product type, pack and crop programme information shown together."),
-        ("02", "KEY BENEFITS", "Three practical benefits taken from the product range information."),
-        ("03", "USE WITH CARE", "The product label and a qualified crop advisor remain the primary guidance."),
-    ]
-    card_y, card_h = H - 129 * mm, 43 * mm
-    card_w, card_gap = 53 * mm, 6 * mm
-    for index, (number, title, copy) in enumerate(cards):
-        x = MARGIN + index * (card_w + card_gap)
-        c.setFillColor(HexColor("#EEF5E6"))
-        c.roundRect(x, card_y, card_w, card_h, 3 * mm, stroke=0, fill=1)
-        c.setFillColor(CLAY)
-        c.setFont("Helvetica-Bold", 8)
-        c.drawString(x + 6 * mm, card_y + card_h - 10 * mm, number)
-        c.setFillColor(INK)
-        c.setFont("Helvetica-Bold", 8.5)
-        c.drawString(x + 6 * mm, card_y + card_h - 18 * mm, title)
-        draw_wrapped(c, copy, x + 6 * mm, card_y + card_h - 28 * mm, card_w - 12 * mm, size=7.7, leading=10.2, color=MUTED, max_lines=3)
+    grouped = {category: [product for product in products if product["category"] == category] for category in CATEGORY_DATA}
+    card_y, card_h = 51 * mm, 135 * mm
+    gap = 6 * mm
+    card_w = (W - 2 * MARGIN - 2 * gap) / 3
+    for index, category in enumerate(("soil", "growth", "micro")):
+        draw_category_card(c, category, grouped[category], MARGIN + index * (card_w + gap), card_y, card_w, card_h)
 
-    list_top = H - 155 * mm
     c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 10)
-    c.drawString(MARGIN, list_top, "PRODUCT DIRECTORY")
-    columns, rows = 3, 6
-    column_gap = 6 * mm
-    column_width = (W - 2 * MARGIN - (columns - 1) * column_gap) / columns
-    for index, product in enumerate(products):
-        col = index // rows
-        row = index % rows
-        x = MARGIN + col * (column_width + column_gap)
-        y = list_top - 14 * mm - row * 13 * mm
-        c.setStrokeColor(LINE)
-        c.line(x, y - 5 * mm, x + column_width, y - 5 * mm)
-        c.setFillColor(CLAY)
-        c.setFont("Helvetica-Bold", 7.5)
-        c.drawString(x, y, f"{index + 1:02d}")
-        c.setFillColor(INK)
-        c.setFont("Helvetica-Bold", 8.1)
-        c.drawString(x + 10 * mm, y, safe_text(product["name"]))
-
-    c.setFillColor(HexColor("#F7E9C5"))
-    c.roundRect(MARGIN, 31 * mm, W - 2 * MARGIN, 25 * mm, 3 * mm, stroke=0, fill=1)
-    c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 8.5)
-    c.drawString(MARGIN + 7 * mm, 47 * mm, "IMPORTANT")
-    draw_wrapped(
-        c,
-        "Product specifications are presented from the respective product pack. Use only as directed on the printed label and by qualified crop-advisor guidance.",
-        MARGIN + 7 * mm,
-        40 * mm,
-        W - 2 * MARGIN - 14 * mm,
-        size=8.2,
-        leading=10,
-        color=MUTED,
-        max_lines=2,
-    )
+    c.setFont("Helvetica-Bold", 7.3)
+    c.drawCentredString(W / 2, 32 * mm, "PRODUCT SPECIFICATIONS ARE SHOWN FROM THE RESPECTIVE PACK. USE ONLY AS DIRECTED.")
     c.showPage()
 
 
-def draw_benefit(c, x, y, width, index, value, accent):
-    c.setStrokeColor(LINE)
-    c.line(x, y + 7 * mm, x + width, y + 7 * mm)
-    c.setFillColor(accent)
-    c.circle(x + 4.2 * mm, y + 15 * mm, 4.2 * mm, stroke=0, fill=1)
-    c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 7.2)
-    c.drawCentredString(x + 4.2 * mm, y + 13.9 * mm, f"{index + 1}")
-    draw_wrapped(c, value, x + 11 * mm, y + 17.5 * mm, width - 13 * mm, font="Helvetica-Bold", size=8.5, leading=10.4, color=INK, max_lines=2)
+def draw_benefit_card(c, x, y, width, height, index, value, style):
+    c.setFillColor(white)
+    c.roundRect(x, y, width, height, 3 * mm, stroke=0, fill=1)
+    c.setStrokeColor(style["accent"])
+    c.setLineWidth(1.1)
+    c.roundRect(x, y, width, height, 3 * mm, stroke=1, fill=0)
+    c.setFillColor(style["accent"])
+    c.circle(x + 10 * mm, y + height - 12 * mm, 6 * mm, stroke=0, fill=1)
+    c.setFillColor(style["deep"])
+    c.setFont("Helvetica-Bold", 8)
+    c.drawCentredString(x + 10 * mm, y + height - 14.5 * mm, f"0{index + 1}")
+    c.setFillColor(CLAY)
+    c.setFont("Helvetica-Bold", 6.7)
+    c.drawString(x + 7 * mm, y + height - 25 * mm, "KEY BENEFIT")
+    draw_wrapped(c, value, x + 7 * mm, y + height - 36 * mm, width - 14 * mm, font=SERIF_BOLD, size=10.5, leading=13, color=INK, max_lines=3)
 
 
 def draw_use_step(c, x, y, width, index, value):
-    c.setStrokeColor(HexColor("#E8D7A8"))
-    c.line(x, y + 6 * mm, x + width, y + 6 * mm)
-    c.setFillColor(LEAF)
-    c.circle(x + 4.2 * mm, y + 14.3 * mm, 4.2 * mm, stroke=0, fill=1)
-    c.setFillColor(white)
+    c.setFillColor(HexColor("#1E5A40"))
+    c.circle(x + 4.6 * mm, y + 15 * mm, 4.6 * mm, stroke=0, fill=1)
+    c.setFillColor(GOLD)
     c.setFont("Helvetica-Bold", 7.3)
-    c.drawCentredString(x + 4.2 * mm, y + 13.1 * mm, str(index + 1))
-    draw_wrapped(c, value, x + 11 * mm, y + 17 * mm, width - 13 * mm, font="Helvetica", size=8.15, leading=10.1, color=INK, max_lines=2)
+    c.drawCentredString(x + 4.6 * mm, y + 13.2 * mm, str(index + 1))
+    draw_wrapped(c, value, x + 12 * mm, y + 18.5 * mm, width - 14 * mm, font="Helvetica", size=7.5, leading=9.3, color=white, max_lines=3)
 
 
 def draw_product_profile(c, product, number, total):
-    category_label, accent = section_header(c, product["category"], number, total)
-    image_x, image_y, image_w, image_h = MARGIN, 133 * mm, 73 * mm, 103 * mm
-    c.setFillColor(white)
-    c.roundRect(image_x, image_y, image_w, image_h, 4 * mm, stroke=0, fill=1)
-    c.setStrokeColor(HexColor("#DCE5D9"))
-    c.setLineWidth(0.9)
-    c.roundRect(image_x, image_y, image_w, image_h, 4 * mm, stroke=1, fill=0)
-    image_path = PUBLIC / product["image"].lstrip("/")
-    draw_image_contain(c, image_path, image_x + 5 * mm, image_y + 5 * mm, image_w - 10 * mm, image_h - 10 * mm)
+    style = CATEGORY_DATA[product["category"]]
+    c.setFillColor(style["wash"])
+    c.rect(0, 0, W, H, stroke=0, fill=1)
+    c.setFillColor(style["accent"])
+    c.circle(W - 2 * mm, H - 44 * mm, 35 * mm, stroke=0, fill=1)
+    c.setFillColor(HexColor("#FFFFFF"))
+    c.circle(W - 2 * mm, H - 44 * mm, 26 * mm, stroke=0, fill=1)
     c.setFillColor(INK)
-    c.roundRect(image_x + 5 * mm, image_y + 5 * mm, 34 * mm, 8 * mm, 1.5 * mm, stroke=0, fill=1)
+    c.rect(0, H - 25 * mm, W, 25 * mm, stroke=0, fill=1)
+    draw_logo(c, MARGIN, H - 22 * mm, 15 * mm)
     c.setFillColor(white)
-    c.setFont("Helvetica-Bold", 6.8)
-    c.drawCentredString(image_x + 22 * mm, image_y + 7.8 * mm, "PRODUCT PACK")
+    c.setFont("Helvetica-Bold", 8)
+    c.drawString(MARGIN + 20 * mm, H - 14.5 * mm, "GAO DEHAT PRODUCT CATALOGUE")
+    c.setFillColor(style["accent"])
+    c.setFont("Helvetica-Bold", 7.5)
+    c.drawRightString(W - MARGIN, H - 14.5 * mm, f"{style['label']}  |  {number:02d}")
+
+    image_x, image_y, image_w, image_h = MARGIN, 142 * mm, 74 * mm, 95 * mm
+    c.setFillColor(INK)
+    c.roundRect(image_x, image_y, image_w, image_h, 6 * mm, stroke=0, fill=1)
+    c.setFillColor(style["accent"])
+    c.circle(image_x + image_w - 2 * mm, image_y + image_h - 7 * mm, 28 * mm, stroke=0, fill=1)
+    c.setFillColor(HexColor("#F7F3E6"))
+    c.roundRect(image_x + 5 * mm, image_y + 7 * mm, image_w - 10 * mm, image_h - 14 * mm, 4 * mm, stroke=0, fill=1)
+    draw_image_contain(c, PUBLIC / product["image"].lstrip("/"), image_x + 8 * mm, image_y + 12 * mm, image_w - 16 * mm, image_h - 28 * mm)
+    c.setFillColor(style["accent"])
+    c.roundRect(image_x + 6 * mm, image_y + 5 * mm, 36 * mm, 7 * mm, 1.5 * mm, stroke=0, fill=1)
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 6.2)
+    c.drawCentredString(image_x + 24 * mm, image_y + 7.4 * mm, "PRODUCT PACK")
 
     detail_x = image_x + image_w + 11 * mm
     detail_w = W - MARGIN - detail_x
-    top_y = H - 47 * mm
     c.setFillColor(CLAY)
     c.setFont("Helvetica-Bold", 8)
-    c.drawString(detail_x, top_y, f"{number:02d}  |  {category_label}")
-    title_size = 27 if len(product["name"]) < 20 else 23
-    title_lines = wrapped_lines(product["name"], "Helvetica-Bold", title_size, detail_w)
+    c.drawString(detail_x, H - 47 * mm, f"PRODUCT PROFILE  |  {number:02d}")
+    c.setFillColor(style["deep"])
+    c.setFont(SERIF_BOLD, 38)
+    c.drawRightString(W - MARGIN, H - 47 * mm, f"{number:02d}")
+    title_size = 27 if len(product["name"]) < 19 else 22
+    title_lines = wrapped_lines(product["name"], SERIF_BOLD, title_size, detail_w)
+    title_y = H - 63 * mm
     c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", title_size)
-    title_y = top_y - 14 * mm
+    c.setFont(SERIF_BOLD, title_size)
     for index, line in enumerate(title_lines[:2]):
-        c.drawString(detail_x, title_y - index * (title_size + 3), safe_text(line))
-    content_y = title_y - len(title_lines[:2]) * (title_size + 3) - 4 * mm
-    type_end = draw_wrapped(c, product["type"], detail_x, content_y, detail_w, font="Helvetica-Bold", size=10.5, leading=13, color=LEAF, max_lines=3)
-    c.setStrokeColor(LINE)
+        c.drawString(detail_x, title_y - index * (title_size + 4), safe_text(line))
+    type_y = title_y - len(title_lines[:2]) * (title_size + 4) - 5 * mm
+    type_end = draw_wrapped(c, product["type"], detail_x, type_y, detail_w, font="Helvetica-Bold", size=10.2, leading=12.5, color=style["deep"], max_lines=3)
+    c.setStrokeColor(style["accent"])
+    c.setLineWidth(1.1)
     c.line(detail_x, type_end - 4 * mm, detail_x + detail_w, type_end - 4 * mm)
-    overview_end = draw_wrapped(c, product["overview"], detail_x, type_end - 12 * mm, detail_w, size=9.2, leading=12.2, color=MUTED, max_lines=4)
-    snapshot_y = max(image_y + 10 * mm, overview_end - 13 * mm)
-    c.setFillColor(HexColor("#EDF5E5"))
-    c.roundRect(detail_x, snapshot_y - 31 * mm, detail_w, 30 * mm, 2.5 * mm, stroke=0, fill=1)
-    c.setFillColor(CLAY)
-    c.setFont("Helvetica-Bold", 7.1)
-    c.drawString(detail_x + 5 * mm, snapshot_y - 8 * mm, "PRODUCT SNAPSHOT")
-    c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 8.7)
-    c.drawString(detail_x + 5 * mm, snapshot_y - 16 * mm, "PACKING")
-    c.setFont("Helvetica", 8.7)
-    c.drawString(detail_x + 27 * mm, snapshot_y - 16 * mm, safe_text(product["pack"]))
-    c.setFont("Helvetica-Bold", 8.7)
-    c.drawString(detail_x + 5 * mm, snapshot_y - 24 * mm, "SUITABLE FOR")
-    draw_wrapped(c, product["suitable"], detail_x + 32 * mm, snapshot_y - 24 * mm, detail_w - 37 * mm, size=7.4, leading=8.5, color=INK, max_lines=2)
+    overview_end = draw_wrapped(c, product["overview"], detail_x, type_end - 13 * mm, detail_w, font="Helvetica", size=9.2, leading=12.2, color=MUTED, max_lines=4)
 
-    panel_y, panel_h = 31 * mm, 77 * mm
-    gap = 7 * mm
-    panel_w = (W - 2 * MARGIN - gap) / 2
-    benefits_x = MARGIN
-    use_x = MARGIN + panel_w + gap
+    essentials_top = max(image_y + 10 * mm, overview_end - 10 * mm)
     c.setFillColor(white)
-    c.roundRect(benefits_x, panel_y, panel_w, panel_h, 3 * mm, stroke=0, fill=1)
-    c.setStrokeColor(LINE)
-    c.roundRect(benefits_x, panel_y, panel_w, panel_h, 3 * mm, stroke=1, fill=0)
-    c.setFillColor(HexColor("#FEF5DB"))
-    c.roundRect(use_x, panel_y, panel_w, panel_h, 3 * mm, stroke=0, fill=1)
-    c.setStrokeColor(HexColor("#EBD8A3"))
-    c.roundRect(use_x, panel_y, panel_w, panel_h, 3 * mm, stroke=1, fill=0)
-
+    c.roundRect(detail_x, essentials_top - 35 * mm, detail_w, 34 * mm, 3 * mm, stroke=0, fill=1)
     c.setFillColor(CLAY)
-    c.setFont("Helvetica-Bold", 7.5)
-    c.drawString(benefits_x + 7 * mm, panel_y + panel_h - 11 * mm, "KEY BENEFITS")
+    c.setFont("Helvetica-Bold", 7)
+    c.drawString(detail_x + 6 * mm, essentials_top - 8 * mm, "THE ESSENTIALS")
     c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 8.2)
-    c.drawString(benefits_x + 7 * mm, panel_y + panel_h - 18 * mm, "What this product is presented to support")
-    benefit_y = panel_y + panel_h - 47 * mm
+    c.setFont("Helvetica-Bold", 8)
+    c.drawString(detail_x + 6 * mm, essentials_top - 17 * mm, "PACK")
+    c.setFont(SERIF_BOLD, 11)
+    c.drawString(detail_x + 22 * mm, essentials_top - 17 * mm, safe_text(product["pack"]))
+    c.setFont("Helvetica-Bold", 8)
+    c.drawString(detail_x + 6 * mm, essentials_top - 26 * mm, "SUITABLE")
+    draw_wrapped(c, product["suitable"], detail_x + 22 * mm, essentials_top - 26 * mm, detail_w - 28 * mm, size=7.4, leading=8.6, color=MUTED, max_lines=2)
+
+    benefit_y, benefit_h = 68 * mm, 51 * mm
+    benefit_gap = 5 * mm
+    benefit_w = (W - 2 * MARGIN - 2 * benefit_gap) / 3
     for index, benefit in enumerate(product["benefits"][:3]):
-        draw_benefit(c, benefits_x + 7 * mm, benefit_y - index * 18 * mm, panel_w - 14 * mm, index, benefit, accent)
+        draw_benefit_card(c, MARGIN + index * (benefit_w + benefit_gap), benefit_y, benefit_w, benefit_h, index, benefit, style)
 
-    c.setFillColor(CLAY)
-    c.setFont("Helvetica-Bold", 7.5)
-    c.drawString(use_x + 7 * mm, panel_y + panel_h - 11 * mm, "USE WITH CARE")
+    use_y, use_h = 20 * mm, 44 * mm
     c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 8.2)
-    c.drawString(use_x + 7 * mm, panel_y + panel_h - 18 * mm, "Follow the label as the primary instruction")
+    c.roundRect(MARGIN, use_y, W - 2 * MARGIN, use_h, 4 * mm, stroke=0, fill=1)
+    c.setFillColor(GOLD)
+    c.setFont("Helvetica-Bold", 7.3)
+    c.drawString(MARGIN + 7 * mm, use_y + use_h - 10 * mm, "LABEL-GUIDED USE")
+    c.setFillColor(HexColor("#D8EAD3"))
+    c.setFont("Helvetica", 7.3)
+    c.drawString(MARGIN + 7 * mm, use_y + use_h - 17 * mm, "Read the pack first. Use only as directed.")
     use_steps = [
-        "Read the printed product label completely before use.",
-        "Follow the pack's dose, crop stage and method, or consult a crop advisor.",
-        "Keep the pack sealed, dry and away from direct sunlight after use.",
+        "Read the printed label fully before using the product.",
+        "Follow the pack's dose, crop stage and application method.",
+        "Keep the pack sealed, dry and away from direct sunlight.",
     ]
-    use_y = panel_y + panel_h - 47 * mm
+    step_start = MARGIN + 7 * mm
+    step_width = (W - 2 * MARGIN - 14 * mm) / 3
     for index, instruction in enumerate(use_steps):
-        draw_use_step(c, use_x + 7 * mm, use_y - index * 18 * mm, panel_w - 14 * mm, index, instruction)
+        draw_use_step(c, step_start + index * step_width, use_y + 6 * mm, step_width - 3 * mm, index, instruction)
 
+    footer(c, number + 2, total)
     c.showPage()
 
 
 def main():
+    register_fonts()
     products = parse_products()
     total_pages = len(products) + 2
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
@@ -439,7 +481,7 @@ def main():
     c.setAuthor("Gao Dehat Industries Pvt. Ltd.")
     c.setSubject("Dedicated product profiles for the Gao Dehat agricultural range")
     c.setCreator("Gao Dehat")
-    draw_cover(c, len(products))
+    draw_cover(c, products)
     draw_catalogue_guide(c, products, total_pages)
     for index, product in enumerate(products, start=1):
         draw_product_profile(c, product, index, total_pages)
