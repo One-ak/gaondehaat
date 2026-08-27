@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gao-dehat.fishgoldindustries.chatgpt.site/sitemap.xml

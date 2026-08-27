@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import LanguageToggle from '../../../components/LanguageToggle';
+import MobileNav from '../../../components/MobileNav';
 import SiteFooter from '../../../components/SiteFooter';
 import { getProduct, products, standardUse } from '../../product-data';
 import { createWhatsAppLink } from '../../site-contact';
@@ -61,8 +62,24 @@ export default async function ProductPage({ params }: ProductPageProps) {
     `Hello Gao Dehat Team,\n\nI would like to enquire about ${product.name} (${product.nameHi}).\n\nPlease share product information, availability and pricing.\n\nThank you.`
   );
 
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.overview,
+    image: [`https://gao-dehat.fishgoldindustries.chatgpt.site${product.image}`],
+    brand: { '@type': 'Brand', name: 'Gao Dehat' },
+    manufacturer: { '@type': 'Organization', name: 'Gao Dehat Industries Pvt. Ltd.' },
+    additionalProperty: [
+      { '@type': 'PropertyValue', name: 'Product type', value: product.type },
+      { '@type': 'PropertyValue', name: 'Packing', value: product.pack },
+      { '@type': 'PropertyValue', name: 'Suitable for', value: product.suitable },
+    ],
+  };
+
   return (
     <main className="product-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
       <nav className="detail-nav shell" aria-label="Product navigation">
         <Link className="brand" href="/" aria-label="Gao Dehat home">
           <img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" />
@@ -73,6 +90,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
         <div className="nav-actions">
           <LanguageToggle />
+          <MobileNav />
           <a className="detail-enquiry" href={enquiryLink} target="_blank" rel="noreferrer"><Copy en="WhatsApp enquiry" hi="व्हाट्सऐप पूछताछ" /> <span>↗</span></a>
         </div>
       </nav>

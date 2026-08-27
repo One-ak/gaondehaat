@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import LanguageToggle from '../components/LanguageToggle';
+import MobileNav from '../components/MobileNav';
+import ProductCompare from '../components/ProductCompare';
+import ProductCatalogue from '../components/ProductCatalogue';
 import SiteFooter from '../components/SiteFooter';
 import { products } from './product-data';
 import { COMPANY_EMAIL, generalWhatsAppLink, WHATSAPP_DISPLAY_NUMBER } from './site-contact';
@@ -52,6 +55,7 @@ export default function Home() {
           </div>
           <div className="nav-actions">
             <LanguageToggle />
+            <MobileNav />
             <a className="nav-cta" href="#products"><Copy en="Explore products" hi="उत्पाद देखें" /> <span>↗</span></a>
           </div>
         </nav>
@@ -128,24 +132,16 @@ export default function Home() {
             <p><Copy en="Seventeen focused solutions for soil nourishment, crop support and healthy plant development. Open any product to view its information, key benefits and label-guided use." hi="मिट्टी पोषण, फसल सहयोग और स्वस्थ पौध विकास के लिए 17 केंद्रित समाधान। किसी भी उत्पाद को खोलकर उसकी जानकारी, लाभ और लेबल-आधारित उपयोग देखें।" /></p>
           </div>
 
-          <div className="product-grid">
-            {products.map((product, index) => (
-              <Link className={`product-card ${product.className}`} href={`/products/${product.slug}`} key={product.slug} aria-label={`View ${product.name} details`}>
-                <div className="product-image-wrap">
-                  <span className="product-index">{String(index + 1).padStart(2, '0')}</span>
-                  <img src={product.image} alt={`${product.name} product packaging`} />
-                  <span className="product-note"><Copy en={product.note} hi={product.noteHi} /></span>
-                </div>
-                <div className="product-details">
-                  <p className="product-hindi"><Copy en={product.nameHi} hi="उत्पाद विवरण" /></p>
-                  <h3><Copy en={product.name} hi={product.nameHi} /></h3>
-                  <p><Copy en={product.type} hi={product.typeHi} /></p>
-                  <div><span><Copy en={product.pack} hi={product.packHi} /></span><span className="arrow">↗</span></div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <ProductCatalogue products={products} />
           <p className="product-footnote"><Copy en="* Product specifications are as shown on the respective product pack. Please use only as directed." hi="* उत्पाद की विशिष्टताएँ संबंधित उत्पाद पैक के अनुसार हैं। कृपया केवल निर्देशानुसार उपयोग करें।" /></p>
+          <div className="catalogue-cta">
+            <div>
+              <p><Copy en="Need an easy product list?" hi="उत्पादों की आसान सूची चाहिए?" /></p>
+              <strong><Copy en="Download the Gao Dehat catalogue." hi="गाँव देहात कैटलॉग डाउनलोड करें।" /></strong>
+            </div>
+            <a href="/gao-dehat-product-catalogue.pdf" download><Copy en="Download catalogue" hi="कैटलॉग डाउनलोड करें" /> <span>↓</span></a>
+          </div>
+          <ProductCompare products={products} />
         </div>
       </section>
 
@@ -162,6 +158,70 @@ export default function Home() {
               <span><Copy en="Animal nutrition" hi="पशु पोषण" /></span>
               <span><Copy en="Bio-agro solutions" hi="बायो-एग्रो समाधान" /></span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="crop-guide-section" id="crop-guides">
+        <div className="shell">
+          <div className="crop-guide-heading">
+            <div>
+              <div className="section-label"><span>05</span> <Copy en="Crop-focus guide" hi="फसल-केंद्रित मार्गदर्शिका" /></div>
+              <h2><Copy en="Find support for the" hi="अपनी फसल के लिए सही" /><br /><em><Copy en="way you grow." hi="सहयोग चुनें।" /></em></h2>
+            </div>
+            <p><Copy en="Start with your crop focus, then use the exact product label and a qualified crop advisor for final application guidance." hi="अपनी फसल की आवश्यकता से शुरुआत करें, फिर अंतिम उपयोग मार्गदर्शन के लिए उत्पाद लेबल और योग्य कृषि सलाहकार की सलाह लें।" /></p>
+          </div>
+          <div className="crop-guide-grid">
+            <article className="crop-guide-card soil-guide">
+              <p className="crop-guide-number">01</p>
+              <h3><Copy en="Soil nourishment" hi="मिट्टी पोषण" /></h3>
+              <p><Copy en="For field preparation and soil-nutrition programmes." hi="खेत की तैयारी और मिट्टी-पोषण कार्यक्रमों के लिए।" /></p>
+              <div><span>Green Force</span><span>Super Baan</span><span>DOP PROM</span></div>
+              <Link href="/products/green-force"><Copy en="Explore soil support" hi="मिट्टी पोषण देखें" /> <span>→</span></Link>
+            </article>
+            <article className="crop-guide-card growth-guide">
+              <p className="crop-guide-number">02</p>
+              <h3><Copy en="Plant development" hi="पौध विकास" /></h3>
+              <p><Copy en="For healthy plant development and crop-growth programmes." hi="स्वस्थ पौध विकास और फसल वृद्धि कार्यक्रमों के लिए।" /></p>
+              <div><span>GIPL 24 Karat</span><span>Super Power Win</span></div>
+              <Link href="/products/super-power-win"><Copy en="Explore growth support" hi="वृद्धि सहयोग देखें" /> <span>→</span></Link>
+            </article>
+            <article className="crop-guide-card micro-guide">
+              <p className="crop-guide-number">03</p>
+              <h3><Copy en="Micronutrient balance" hi="सूक्ष्म पोषक संतुलन" /></h3>
+              <p><Copy en="For label-guided nutrient support across crop and flower programmes." hi="फसल और फूल कार्यक्रमों में लेबल-आधारित पोषक सहयोग के लिए।" /></p>
+              <div><span>Zinc Super Gold</span><span>Magnesium Gold</span><span>Boron Gold</span></div>
+              <Link href="/products/zinc-super-gold"><Copy en="Explore micronutrients" hi="सूक्ष्म पोषक देखें" /> <span>→</span></Link>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="trust-section" id="quality">
+        <div className="shell">
+          <div className="trust-heading">
+            <div>
+              <div className="section-label light"><span>06</span> <Copy en="Quality and care" hi="गुणवत्ता और देखभाल" /></div>
+              <h2><Copy en="Clear product information." hi="स्पष्ट उत्पाद जानकारी।" /><br /><em><Copy en="Practical support." hi="व्यावहारिक सहयोग।" /></em></h2>
+            </div>
+            <p><Copy en="Every Gao Dehat product page keeps the pack, benefits and label-guided use information together, so farmers can make a more informed enquiry." hi="हर गाँव देहात उत्पाद पृष्ठ पर पैक, लाभ और लेबल-आधारित उपयोग जानकारी एक साथ दी जाती है, ताकि किसान सही जानकारी के साथ पूछताछ कर सकें।" /></p>
+          </div>
+          <div className="trust-grid">
+            <article className="trust-card">
+              <span>01</span>
+              <h3><Copy en="Pack-first information" hi="पैक-आधारित जानकारी" /></h3>
+              <p><Copy en="Product details are presented from the information visible on the respective product pack." hi="उत्पाद विवरण संबंधित उत्पाद पैक पर उपलब्ध जानकारी के आधार पर प्रस्तुत किए जाते हैं।" /></p>
+            </article>
+            <article className="trust-card">
+              <span>02</span>
+              <h3><Copy en="Label-guided use" hi="लेबल-आधारित उपयोग" /></h3>
+              <p><Copy en="For safe application, follow the printed label and take crop-specific advice from a qualified advisor." hi="सुरक्षित उपयोग के लिए छपे लेबल का पालन करें और फसल-विशिष्ट सलाह योग्य सलाहकार से लें।" /></p>
+            </article>
+            <article className="trust-card">
+              <span>03</span>
+              <h3><Copy en="A Vansh Group company" hi="वंश ग्रुप की कंपनी" /></h3>
+              <p><Copy en="Gao Dehat brings Vansh Group's practical, field-first approach to crop nutrition and soil health." hi="गाँव देहात वंश ग्रुप के व्यावहारिक, फील्ड-फर्स्ट दृष्टिकोण को फसल पोषण और मिट्टी स्वास्थ्य तक पहुंचाता है।" /></p>
+            </article>
           </div>
         </div>
       </section>
@@ -184,7 +244,7 @@ export default function Home() {
       <section className="contact-section" id="contact">
         <div className="shell contact-grid">
           <div>
-            <div className="section-label"><span>05</span> <Copy en="Let’s grow together" hi="आइए साथ बढ़ें" /></div>
+            <div className="section-label"><span>07</span> <Copy en="Let’s grow together" hi="आइए साथ बढ़ें" /></div>
             <h2><Copy en="For product, dealer or" hi="उत्पाद, डीलर या" /><br /><em><Copy en="bulk supply enquiries." hi="बल्क सप्लाई जानकारी के लिए।" /></em></h2>
           </div>
           <div className="contact-details">
