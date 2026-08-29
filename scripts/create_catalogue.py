@@ -16,7 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "output" / "pdf" / "gao-dehat-product-catalogue.pdf"
 PUBLIC = ROOT / "public"
 IMAGE_CACHE = ROOT / "tmp" / "catalogue-images"
-DEVANAGARI_FONT = Path("/System/Library/Fonts/Supplemental/Devanagari Sangam MN.ttc")
+# Devanagari MT has cleaner, more open glyphs at the small sizes used in the
+# catalogue. Hindi copy is rasterised at print resolution because ReportLab
+# cannot shape Devanagari reliably on its own.
+DEVANAGARI_FONT = Path("/System/Library/Fonts/Supplemental/DevanagariMT.ttc")
 
 W, H = A4
 MARGIN = 15 * mm
@@ -99,7 +102,9 @@ def native_text_image(text, font_size, max_width, color, max_lines=None):
         raise FileNotFoundError(f"Required Devanagari font is unavailable: {DEVANAGARI_FONT}")
 
     text = normalise_native_text(text)
-    pixels_per_point = 4
+    # Keep the Hindi assets well above print resolution so they stay crisp in
+    # the PDF viewer and when the catalogue is printed.
+    pixels_per_point = 8
     font = ImageFont.truetype(str(DEVANAGARI_FONT), size=round(font_size * pixels_per_point))
     measure = ImageDraw.Draw(Image.new("RGB", (1, 1)))
     max_width_px = round(max_width * pixels_per_point)
@@ -123,7 +128,14 @@ def native_text_image(text, font_size, max_width, color, max_lines=None):
     image = Image.new("RGBA", (text_width + padding * 2, line_height * len(lines) + padding * 2), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
     for index, item in enumerate(lines):
-        draw.text((padding, padding + index * line_height), item, font=font, fill=color_hex(color))
+        draw.text(
+            (padding, padding + index * line_height),
+            item,
+            font=font,
+            fill=color_hex(color),
+            stroke_width=1,
+            stroke_fill=color_hex(color),
+        )
 
     IMAGE_CACHE.mkdir(parents=True, exist_ok=True)
     destination = IMAGE_CACHE / f"name-{sha1((text + str(font_size) + color_hex(color) + str(max_lines)).encode()).hexdigest()[:12]}.png"
@@ -456,7 +468,7 @@ def draw_benefit_card(c, x, y, width, height, index, value, value_hi, style):
     c.setFont("Helvetica-Bold", 6.7)
     c.drawString(x + 7 * mm, y + height - 25 * mm, "KEY BENEFIT")
     english_end = draw_wrapped(c, value, x + 7 * mm, y + height - 36 * mm, width - 14 * mm, font=SERIF_BOLD, size=9, leading=11, color=INK, max_lines=2)
-    draw_exact_wrapped(c, value_hi, x + 7 * mm, english_end - 2 * mm, width - 14 * mm, size=7.7, leading=9.5, color=MUTED, max_lines=2)
+    draw_exact_wrapped(c, value_hi, x + 7 * mm, english_end - 2 * mm, width - 14 * mm, size=8.2, leading=10, color=INK, max_lines=2)
 
 
 def draw_use_step(c, x, y, width, index, value, value_hi):
@@ -466,7 +478,7 @@ def draw_use_step(c, x, y, width, index, value, value_hi):
     c.setFont("Helvetica-Bold", 7.3)
     c.drawCentredString(x + 4.6 * mm, y + 13.2 * mm, str(index + 1))
     english_end = draw_wrapped(c, value, x + 12 * mm, y + 18.5 * mm, width - 14 * mm, font="Helvetica", size=7.2, leading=8.6, color=white, max_lines=2)
-    draw_exact_wrapped(c, value_hi, x + 12 * mm, english_end - 1.5 * mm, width - 14 * mm, size=6.6, leading=8, color=HexColor("#D8EAD3"), max_lines=2)
+    draw_exact_wrapped(c, value_hi, x + 12 * mm, english_end - 1.5 * mm, width - 14 * mm, size=7.1, leading=8.5, color=white, max_lines=2)
 
 
 def draw_product_profile(c, product, number, total):
@@ -514,12 +526,12 @@ def draw_product_profile(c, product, number, total):
     title_end = draw_exact_name(c, product["name"], detail_x, title_y, detail_w, title_size, INK)
     type_y = title_end - 5 * mm
     type_end = draw_wrapped(c, product["type"], detail_x, type_y, detail_w, font="Helvetica-Bold", size=9.5, leading=11.3, color=style["deep"], max_lines=2)
-    type_hi_end = draw_exact_wrapped(c, product["typeHi"], detail_x, type_end - 2 * mm, detail_w, size=8.5, leading=10, color=style["deep"], max_lines=2)
+    type_hi_end = draw_exact_wrapped(c, product["typeHi"], detail_x, type_end - 2 * mm, detail_w, size=9.2, leading=10.8, color=style["deep"], max_lines=2)
     c.setStrokeColor(style["accent"])
     c.setLineWidth(1.1)
     c.line(detail_x, type_hi_end - 3 * mm, detail_x + detail_w, type_hi_end - 3 * mm)
     overview_end = draw_wrapped(c, product["overview"], detail_x, type_hi_end - 11 * mm, detail_w, font="Helvetica", size=8.5, leading=10.4, color=MUTED, max_lines=2)
-    overview_hi_end = draw_exact_wrapped(c, product["overviewHi"], detail_x, overview_end - 1.8 * mm, detail_w, size=7.8, leading=9.4, color=MUTED, max_lines=2)
+    overview_hi_end = draw_exact_wrapped(c, product["overviewHi"], detail_x, overview_end - 1.8 * mm, detail_w, size=8.3, leading=10, color=INK, max_lines=2)
 
     essentials_top = 160 * mm
     c.setFillColor(white)
@@ -532,11 +544,11 @@ def draw_product_profile(c, product, number, total):
     c.drawString(detail_x + 6 * mm, essentials_top - 17 * mm, "PACK")
     c.setFont(SERIF_BOLD, 10)
     c.drawString(detail_x + 26 * mm, essentials_top - 17 * mm, safe_text(product["pack"]))
-    draw_exact_wrapped(c, product["packHi"], detail_x + 26 * mm, essentials_top - 22 * mm, detail_w - 32 * mm, size=7.2, leading=8.7, color=MUTED, max_lines=1)
+    draw_exact_wrapped(c, product["packHi"], detail_x + 26 * mm, essentials_top - 22 * mm, detail_w - 32 * mm, size=7.8, leading=9.3, color=INK, max_lines=1)
     c.setFont("Helvetica-Bold", 8)
     c.drawString(detail_x + 6 * mm, essentials_top - 31 * mm, "SUITABLE")
     suitable_end = draw_wrapped(c, product["suitable"], detail_x + 32 * mm, essentials_top - 31 * mm, detail_w - 38 * mm, size=6.6, leading=7.7, color=MUTED, max_lines=2)
-    draw_exact_wrapped(c, product["suitableHi"], detail_x + 32 * mm, suitable_end - 1 * mm, detail_w - 38 * mm, size=6.4, leading=7.8, color=MUTED, max_lines=2)
+    draw_exact_wrapped(c, product["suitableHi"], detail_x + 32 * mm, suitable_end - 1 * mm, detail_w - 38 * mm, size=7.1, leading=8.5, color=INK, max_lines=2)
 
     benefit_y, benefit_h = 68 * mm, 51 * mm
     benefit_gap = 5 * mm
