@@ -176,7 +176,7 @@ export default function Home() {
               <p className="crop-guide-number">01</p>
               <h3><Copy en="Soil nourishment" hi="मिट्टी पोषण" /></h3>
               <p><Copy en="For field preparation and soil-nutrition programmes." hi="खेत की तैयारी और मिट्टी-पोषण कार्यक्रमों के लिए।" /></p>
-              <div><span>Green Force</span><span>Super Baan</span><span>DOP PROM</span></div>
+              <div><span>Green Phoss</span><span>सुपर बाण</span><span>D O P</span></div>
               <Link href="/products/green-force"><Copy en="Explore soil support" hi="मिट्टी पोषण देखें" /> <span>→</span></Link>
             </article>
             <article className="crop-guide-card growth-guide">

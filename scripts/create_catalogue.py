@@ -1,7 +1,8 @@
+from hashlib import sha1
 from pathlib import Path
 import re
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from reportlab.lib.colors import HexColor, white
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
@@ -15,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "output" / "pdf" / "gao-dehat-product-catalogue.pdf"
 PUBLIC = ROOT / "public"
 IMAGE_CACHE = ROOT / "tmp" / "catalogue-images"
+DEVANAGARI_FONT = Path("/System/Library/Fonts/Supplemental/Devanagari Sangam MN.ttc")
 
 W, H = A4
 MARGIN = 15 * mm
@@ -77,6 +79,75 @@ def safe_text(value):
     for source, target in replacements.items():
         value = value.replace(source, target)
     return value.encode("latin-1", "replace").decode("latin-1")
+
+
+def has_devanagari(value):
+    return any("\u0900" <= character <= "\u097f" for character in value)
+
+
+def color_hex(color):
+    return f"#{int(color.red * 255):02x}{int(color.green * 255):02x}{int(color.blue * 255):02x}"
+
+
+def native_text_image(text, font_size, max_width, color):
+    """Render pack names in their original Devanagari, not a translated substitute."""
+    if not DEVANAGARI_FONT.exists():
+        raise FileNotFoundError(f"Required Devanagari font is unavailable: {DEVANAGARI_FONT}")
+
+    pixels_per_point = 4
+    font = ImageFont.truetype(str(DEVANAGARI_FONT), size=round(font_size * pixels_per_point))
+    measure = ImageDraw.Draw(Image.new("RGB", (1, 1)))
+    max_width_px = round(max_width * pixels_per_point)
+    lines, line = [], ""
+    for word in text.split():
+        candidate = word if not line else f"{line} {word}"
+        candidate_width = measure.textbbox((0, 0), candidate, font=font)[2]
+        if candidate_width <= max_width_px or not line:
+            line = candidate
+        else:
+            lines.append(line)
+            line = word
+    if line:
+        lines.append(line)
+
+    padding = round(1.5 * pixels_per_point)
+    line_height = round(font_size * pixels_per_point * 1.23)
+    text_width = max(measure.textbbox((0, 0), item, font=font)[2] for item in lines)
+    image = Image.new("RGBA", (text_width + padding * 2, line_height * len(lines) + padding * 2), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    for index, item in enumerate(lines):
+        draw.text((padding, padding + index * line_height), item, font=font, fill=color_hex(color))
+
+    IMAGE_CACHE.mkdir(parents=True, exist_ok=True)
+    destination = IMAGE_CACHE / f"name-{sha1((text + str(font_size) + color_hex(color)).encode()).hexdigest()[:12]}.png"
+    image.save(destination)
+    return destination, image.width / pixels_per_point, image.height / pixels_per_point
+
+
+def draw_exact_name(c, text, x, y_top, max_width, size, color):
+    """Draw a product name in the exact script printed on its pack."""
+    if not has_devanagari(text):
+        lines = wrapped_lines(text, SERIF_BOLD, size, max_width)
+        c.setFillColor(color)
+        c.setFont(SERIF_BOLD, size)
+        leading = size + 4
+        for index, line in enumerate(lines[:2]):
+            c.drawString(x, y_top - index * leading, safe_text(line))
+        return y_top - len(lines[:2]) * leading
+
+    image_path, image_width, image_height = native_text_image(text, size, max_width, color)
+    c.drawImage(str(image_path), x, y_top - image_height, width=image_width, height=image_height, mask="auto")
+    return y_top - image_height
+
+
+def draw_exact_name_row(c, text, x, y, max_width, size, color):
+    if not has_devanagari(text):
+        c.setFillColor(color)
+        c.setFont("Helvetica-Bold", size)
+        c.drawString(x, y, safe_text(text))
+        return
+    image_path, image_width, image_height = native_text_image(text, size, max_width, color)
+    c.drawImage(str(image_path), x, y - image_height * 0.76, width=image_width, height=image_height, mask="auto")
 
 
 def parse_products():
@@ -297,9 +368,7 @@ def draw_category_card(c, category, products, x, y, width, height):
         c.setFillColor(CLAY)
         c.setFont("Helvetica-Bold", 6.2)
         c.drawString(x + 7 * mm, row_y, f"{index + 1:02d}")
-        c.setFillColor(INK)
-        c.setFont("Helvetica-Bold", 7.3)
-        c.drawString(x + 15 * mm, row_y, safe_text(product["name"]))
+        draw_exact_name_row(c, product["name"], x + 15 * mm, row_y, width - 22 * mm, 7.3, INK)
     draw_image_contain(c, PUBLIC / products[0]["image"].lstrip("/"), x + width - 34 * mm, y + 7 * mm, 27 * mm, 33 * mm)
 
 
@@ -414,13 +483,9 @@ def draw_product_profile(c, product, number, total):
     c.setFont(SERIF_BOLD, 38)
     c.drawRightString(W - MARGIN, H - 47 * mm, f"{number:02d}")
     title_size = 27 if len(product["name"]) < 19 else 22
-    title_lines = wrapped_lines(product["name"], SERIF_BOLD, title_size, detail_w)
     title_y = H - 63 * mm
-    c.setFillColor(INK)
-    c.setFont(SERIF_BOLD, title_size)
-    for index, line in enumerate(title_lines[:2]):
-        c.drawString(detail_x, title_y - index * (title_size + 4), safe_text(line))
-    type_y = title_y - len(title_lines[:2]) * (title_size + 4) - 5 * mm
+    title_end = draw_exact_name(c, product["name"], detail_x, title_y, detail_w, title_size, INK)
+    type_y = title_end - 5 * mm
     type_end = draw_wrapped(c, product["type"], detail_x, type_y, detail_w, font="Helvetica-Bold", size=10.2, leading=12.5, color=style["deep"], max_lines=3)
     c.setStrokeColor(style["accent"])
     c.setLineWidth(1.1)

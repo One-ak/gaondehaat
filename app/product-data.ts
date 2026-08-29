@@ -55,7 +55,7 @@ export const products: Product[] = [
     suitable: 'Label-listed crops and crop programmes.', suitableHi: 'लेबल पर दी गई फसलों और फसल कार्यक्रमों के लिए।',
   },
   {
-    slug: 'green-force', className: 'green-force', name: 'Green Force', nameHi: 'ग्रीन फोर्स',
+    slug: 'green-force', className: 'green-force', name: 'Green Phoss', nameHi: 'ग्रीन फॉस',
     type: 'Phosphate Rich Organic Manure', typeHi: 'फॉस्फेट समृद्ध जैविक खाद',
     image: '/products/green-force-packshot.png', pack: '50 kg pack', packHi: '50 किग्रा पैक',
     note: 'PROM · 8% P₂O₅', noteHi: 'पीआरओएम · 8% पी₂ओ₅',
@@ -66,7 +66,7 @@ export const products: Product[] = [
     suitable: 'Field and horticulture crop programmes, as directed on the label.', suitableHi: 'लेबल के निर्देशानुसार खेत और बागवानी फसल कार्यक्रमों के लिए।',
   },
   {
-    slug: 'super-baan', className: 'super-baan', name: 'Super Baan', nameHi: 'सुपर बाण',
+    slug: 'super-baan', className: 'super-baan', name: 'सुपर बाण', nameHi: 'सुपर बाण',
     type: 'Super Prime Granular / Powder PROM', typeHi: 'सुपर प्राइम दानेदार / पाउडर पीआरओएम',
     image: '/products/super-baan-packshot.png', pack: '50 kg pack', packHi: '50 किग्रा पैक',
     note: 'Granular & powder', noteHi: 'दानेदार और पाउडर',
@@ -77,7 +77,7 @@ export const products: Product[] = [
     suitable: 'Crop programmes as directed on the label.', suitableHi: 'लेबल के निर्देशानुसार फसल कार्यक्रमों के लिए।',
   },
   {
-    slug: 'dop-prom', className: 'dop-prom', name: 'DOP PROM', nameHi: 'डी ओ पी पीआरओएम',
+    slug: 'dop-prom', className: 'dop-prom', name: 'D O P', nameHi: 'डी ओ पी',
     type: 'Phosphate Rich Organic Manure', typeHi: 'फॉस्फेट समृद्ध जैविक खाद',
     image: '/products/dop-prom-packshot.png', pack: '50 kg pack', packHi: '50 किग्रा पैक',
     note: 'PROM · 8% P₂O₅', noteHi: 'पीआरओएम · 8% पी₂ओ₅',
@@ -143,7 +143,7 @@ export const products: Product[] = [
     suitable: 'Crop and flower programmes as directed on the label.', suitableHi: 'लेबल के निर्देशानुसार फसल और फूल कार्यक्रमों के लिए।',
   },
   {
-    slug: 'fertile-blossom-high-zinc', className: 'blossom-zinc', name: 'Fertile Blossom High Zinc', nameHi: 'फर्टाइल ब्लॉसम हाई जिंक',
+    slug: 'fertile-blossom-high-zinc', className: 'blossom-zinc', name: 'फर्टाइल ब्लॉसम हाई जिंक', nameHi: 'फर्टाइल ब्लॉसम हाई जिंक',
     type: 'Micronutrients fertilizer · Micronutrients + Sulphur', typeHi: 'सूक्ष्म पोषक उर्वरक · सूक्ष्म पोषक तत्व + सल्फर',
     image: '/products/fertile-blossom-high-zinc.jpeg', pack: 'Crop & flower yield', packHi: 'फसल और फूल उपज',
     note: 'Micronutrients + sulphur', noteHi: 'सूक्ष्म पोषक तत्व + सल्फर',
@@ -154,7 +154,7 @@ export const products: Product[] = [
     suitable: 'Crop and flower programmes as directed on the label.', suitableHi: 'लेबल के निर्देशानुसार फसल और फूल कार्यक्रमों के लिए।',
   },
   {
-    slug: 'boron-gold', className: 'boron-gold', name: 'Boron Gold', nameHi: 'बोरॉन गोल्ड',
+    slug: 'boron-gold', className: 'boron-gold', name: 'पोषक', nameHi: 'पोषक',
     type: 'Sodium Tetraborate · Boron (B) 10.5% w/w min', typeHi: 'सोडियम टेट्राबोरेट · बोरॉन (बी) 10.5% w/w न्यूनतम',
     image: '/products/boron-gold.jpeg', pack: 'For soil application', packHi: 'मृदा अनुप्रयोग के लिए',
     note: 'Micronutrient fertilizer', noteHi: 'सूक्ष्म पोषक उर्वरक',
@@ -165,7 +165,7 @@ export const products: Product[] = [
     suitable: 'Soil application only as directed on the pack.', suitableHi: 'केवल पैक के निर्देशानुसार मृदा अनुप्रयोग के लिए।',
   },
   {
-    slug: 'micro-force', className: 'micro-force', name: 'Micro Force', nameHi: 'माइक्रो फोर्स',
+    slug: 'micro-force', className: 'micro-force', name: 'माइक्रो फेरस', nameHi: 'माइक्रो फेरस',
     type: 'Ferrous Sulphate · 19%', typeHi: 'फेरस सल्फेट · 19%',
     image: '/products/micro-force.jpeg', pack: 'Micronutrient fertilizer', packHi: 'सूक्ष्म पोषक उर्वरक',
     note: 'Ferrous sulphate', noteHi: 'फेरस सल्फेट',
@@ -187,7 +187,7 @@ export const products: Product[] = [
     suitable: 'Crop programmes as directed on the label.', suitableHi: 'लेबल के निर्देशानुसार फसल कार्यक्रमों के लिए।',
   },
   {
-    slug: 'bhumi-pakar', className: 'bhumihar', name: 'Bhumi Pakar', nameHi: 'भूमि पकार',
+    slug: 'bhumi-pakar', className: 'bhumihar', name: 'भूमि पकार', nameHi: 'भूमि पकार',
     type: 'Nitro 35% + Humic Acid 15% + Amino Acid 10%', typeHi: 'नाइट्रो 35% + ह्यूमिक एसिड 15% + अमीनो एसिड 10%',
     image: '/products/bhumihar.jpeg', pack: 'Biostimulant product', packHi: 'बायोस्टिमुलेंट उत्पाद',
     note: 'Biostimulant', noteHi: 'बायोस्टिमुलेंट',
