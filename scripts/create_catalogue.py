@@ -89,11 +89,16 @@ def color_hex(color):
     return f"#{int(color.red * 255):02x}{int(color.green * 255):02x}{int(color.blue * 255):02x}"
 
 
-def native_text_image(text, font_size, max_width, color):
+def normalise_native_text(value):
+    return value.replace("·", " - ").replace("×", "x").replace("–", "-").replace("—", "-")
+
+
+def native_text_image(text, font_size, max_width, color, max_lines=None):
     """Render pack names in their original Devanagari, not a translated substitute."""
     if not DEVANAGARI_FONT.exists():
         raise FileNotFoundError(f"Required Devanagari font is unavailable: {DEVANAGARI_FONT}")
 
+    text = normalise_native_text(text)
     pixels_per_point = 4
     font = ImageFont.truetype(str(DEVANAGARI_FONT), size=round(font_size * pixels_per_point))
     measure = ImageDraw.Draw(Image.new("RGB", (1, 1)))
@@ -109,6 +114,8 @@ def native_text_image(text, font_size, max_width, color):
             line = word
     if line:
         lines.append(line)
+    if max_lines:
+        lines = lines[:max_lines]
 
     padding = round(1.5 * pixels_per_point)
     line_height = round(font_size * pixels_per_point * 1.23)
@@ -119,7 +126,7 @@ def native_text_image(text, font_size, max_width, color):
         draw.text((padding, padding + index * line_height), item, font=font, fill=color_hex(color))
 
     IMAGE_CACHE.mkdir(parents=True, exist_ok=True)
-    destination = IMAGE_CACHE / f"name-{sha1((text + str(font_size) + color_hex(color)).encode()).hexdigest()[:12]}.png"
+    destination = IMAGE_CACHE / f"name-{sha1((text + str(font_size) + color_hex(color) + str(max_lines)).encode()).hexdigest()[:12]}.png"
     image.save(destination)
     return destination, image.width / pixels_per_point, image.height / pixels_per_point
 
@@ -150,6 +157,15 @@ def draw_exact_name_row(c, text, x, y, max_width, size, color):
     c.drawImage(str(image_path), x, y - image_height * 0.76, width=image_width, height=image_height, mask="auto")
 
 
+def draw_exact_wrapped(c, text, x, y, max_width, size, leading, color, max_lines=None, font="Helvetica"):
+    """Draw English and Hindi copy at the same visual level without losing the Hindi script."""
+    if not has_devanagari(text):
+        return draw_wrapped(c, text, x, y, max_width, font=font, size=size, leading=leading, color=color, max_lines=max_lines)
+    image_path, image_width, image_height = native_text_image(text, size, max_width, color, max_lines=max_lines)
+    c.drawImage(str(image_path), x, y - image_height, width=image_width, height=image_height, mask="auto")
+    return y - image_height
+
+
 def parse_products():
     """Use the website's canonical product data so the catalogue stays in sync."""
     source = (ROOT / "app" / "product-data.ts").read_text(encoding="utf-8")
@@ -167,15 +183,24 @@ def parse_products():
         benefits_match = re.search(r"\bbenefits:\s*\[([^\]]+)\]", block, flags=re.S)
         if not benefits_match:
             raise ValueError("Missing benefits in product data")
+        benefits_hi_match = re.search(r"\bbenefitsHi:\s*\[([^\]]+)\]", block, flags=re.S)
+        if not benefits_hi_match:
+            raise ValueError("Missing benefitsHi in product data")
         product = {
             "slug": prop(block, "slug"),
             "name": prop(block, "name"),
+            "nameHi": prop(block, "nameHi"),
             "type": prop(block, "type"),
+            "typeHi": prop(block, "typeHi"),
             "image": prop(block, "image"),
             "pack": prop(block, "pack"),
+            "packHi": prop(block, "packHi"),
             "overview": prop(block, "overview"),
+            "overviewHi": prop(block, "overviewHi"),
             "benefits": re.findall(r"'([^']*)'", benefits_match.group(1)),
+            "benefitsHi": re.findall(r"'([^']*)'", benefits_hi_match.group(1)),
             "suitable": prop(block, "suitable"),
+            "suitableHi": prop(block, "suitableHi"),
         }
         product["category"] = "soil" if product["slug"] in SOIL_PRODUCTS else "growth" if product["slug"] in GROWTH_PRODUCTS else "micro"
         products.append(product)
@@ -416,7 +441,7 @@ def draw_catalogue_guide(c, products, total):
     c.showPage()
 
 
-def draw_benefit_card(c, x, y, width, height, index, value, style):
+def draw_benefit_card(c, x, y, width, height, index, value, value_hi, style):
     c.setFillColor(white)
     c.roundRect(x, y, width, height, 3 * mm, stroke=0, fill=1)
     c.setStrokeColor(style["accent"])
@@ -430,16 +455,18 @@ def draw_benefit_card(c, x, y, width, height, index, value, style):
     c.setFillColor(CLAY)
     c.setFont("Helvetica-Bold", 6.7)
     c.drawString(x + 7 * mm, y + height - 25 * mm, "KEY BENEFIT")
-    draw_wrapped(c, value, x + 7 * mm, y + height - 36 * mm, width - 14 * mm, font=SERIF_BOLD, size=10.5, leading=13, color=INK, max_lines=3)
+    english_end = draw_wrapped(c, value, x + 7 * mm, y + height - 36 * mm, width - 14 * mm, font=SERIF_BOLD, size=9, leading=11, color=INK, max_lines=2)
+    draw_exact_wrapped(c, value_hi, x + 7 * mm, english_end - 2 * mm, width - 14 * mm, size=7.7, leading=9.5, color=MUTED, max_lines=2)
 
 
-def draw_use_step(c, x, y, width, index, value):
+def draw_use_step(c, x, y, width, index, value, value_hi):
     c.setFillColor(HexColor("#1E5A40"))
     c.circle(x + 4.6 * mm, y + 15 * mm, 4.6 * mm, stroke=0, fill=1)
     c.setFillColor(GOLD)
     c.setFont("Helvetica-Bold", 7.3)
     c.drawCentredString(x + 4.6 * mm, y + 13.2 * mm, str(index + 1))
-    draw_wrapped(c, value, x + 12 * mm, y + 18.5 * mm, width - 14 * mm, font="Helvetica", size=7.5, leading=9.3, color=white, max_lines=3)
+    english_end = draw_wrapped(c, value, x + 12 * mm, y + 18.5 * mm, width - 14 * mm, font="Helvetica", size=7.2, leading=8.6, color=white, max_lines=2)
+    draw_exact_wrapped(c, value_hi, x + 12 * mm, english_end - 1.5 * mm, width - 14 * mm, size=6.6, leading=8, color=HexColor("#D8EAD3"), max_lines=2)
 
 
 def draw_product_profile(c, product, number, total):
@@ -486,32 +513,36 @@ def draw_product_profile(c, product, number, total):
     title_y = H - 63 * mm
     title_end = draw_exact_name(c, product["name"], detail_x, title_y, detail_w, title_size, INK)
     type_y = title_end - 5 * mm
-    type_end = draw_wrapped(c, product["type"], detail_x, type_y, detail_w, font="Helvetica-Bold", size=10.2, leading=12.5, color=style["deep"], max_lines=3)
+    type_end = draw_wrapped(c, product["type"], detail_x, type_y, detail_w, font="Helvetica-Bold", size=9.5, leading=11.3, color=style["deep"], max_lines=2)
+    type_hi_end = draw_exact_wrapped(c, product["typeHi"], detail_x, type_end - 2 * mm, detail_w, size=8.5, leading=10, color=style["deep"], max_lines=2)
     c.setStrokeColor(style["accent"])
     c.setLineWidth(1.1)
-    c.line(detail_x, type_end - 4 * mm, detail_x + detail_w, type_end - 4 * mm)
-    overview_end = draw_wrapped(c, product["overview"], detail_x, type_end - 13 * mm, detail_w, font="Helvetica", size=9.2, leading=12.2, color=MUTED, max_lines=4)
+    c.line(detail_x, type_hi_end - 3 * mm, detail_x + detail_w, type_hi_end - 3 * mm)
+    overview_end = draw_wrapped(c, product["overview"], detail_x, type_hi_end - 11 * mm, detail_w, font="Helvetica", size=8.5, leading=10.4, color=MUTED, max_lines=2)
+    overview_hi_end = draw_exact_wrapped(c, product["overviewHi"], detail_x, overview_end - 1.8 * mm, detail_w, size=7.8, leading=9.4, color=MUTED, max_lines=2)
 
-    essentials_top = max(image_y + 10 * mm, overview_end - 10 * mm)
+    essentials_top = 160 * mm
     c.setFillColor(white)
-    c.roundRect(detail_x, essentials_top - 35 * mm, detail_w, 34 * mm, 3 * mm, stroke=0, fill=1)
+    c.roundRect(detail_x, essentials_top - 44 * mm, detail_w, 43 * mm, 3 * mm, stroke=0, fill=1)
     c.setFillColor(CLAY)
     c.setFont("Helvetica-Bold", 7)
     c.drawString(detail_x + 6 * mm, essentials_top - 8 * mm, "THE ESSENTIALS")
     c.setFillColor(INK)
     c.setFont("Helvetica-Bold", 8)
     c.drawString(detail_x + 6 * mm, essentials_top - 17 * mm, "PACK")
-    c.setFont(SERIF_BOLD, 11)
-    c.drawString(detail_x + 22 * mm, essentials_top - 17 * mm, safe_text(product["pack"]))
+    c.setFont(SERIF_BOLD, 10)
+    c.drawString(detail_x + 26 * mm, essentials_top - 17 * mm, safe_text(product["pack"]))
+    draw_exact_wrapped(c, product["packHi"], detail_x + 26 * mm, essentials_top - 22 * mm, detail_w - 32 * mm, size=7.2, leading=8.7, color=MUTED, max_lines=1)
     c.setFont("Helvetica-Bold", 8)
-    c.drawString(detail_x + 6 * mm, essentials_top - 26 * mm, "SUITABLE")
-    draw_wrapped(c, product["suitable"], detail_x + 22 * mm, essentials_top - 26 * mm, detail_w - 28 * mm, size=7.4, leading=8.6, color=MUTED, max_lines=2)
+    c.drawString(detail_x + 6 * mm, essentials_top - 31 * mm, "SUITABLE")
+    suitable_end = draw_wrapped(c, product["suitable"], detail_x + 32 * mm, essentials_top - 31 * mm, detail_w - 38 * mm, size=6.6, leading=7.7, color=MUTED, max_lines=2)
+    draw_exact_wrapped(c, product["suitableHi"], detail_x + 32 * mm, suitable_end - 1 * mm, detail_w - 38 * mm, size=6.4, leading=7.8, color=MUTED, max_lines=2)
 
     benefit_y, benefit_h = 68 * mm, 51 * mm
     benefit_gap = 5 * mm
     benefit_w = (W - 2 * MARGIN - 2 * benefit_gap) / 3
     for index, benefit in enumerate(product["benefits"][:3]):
-        draw_benefit_card(c, MARGIN + index * (benefit_w + benefit_gap), benefit_y, benefit_w, benefit_h, index, benefit, style)
+        draw_benefit_card(c, MARGIN + index * (benefit_w + benefit_gap), benefit_y, benefit_w, benefit_h, index, benefit, product["benefitsHi"][index], style)
 
     use_y, use_h = 20 * mm, 44 * mm
     c.setFillColor(INK)
@@ -520,17 +551,22 @@ def draw_product_profile(c, product, number, total):
     c.setFont("Helvetica-Bold", 7.3)
     c.drawString(MARGIN + 7 * mm, use_y + use_h - 10 * mm, "LABEL-GUIDED USE")
     c.setFillColor(HexColor("#D8EAD3"))
-    c.setFont("Helvetica", 7.3)
+    c.setFont("Helvetica", 6.8)
     c.drawString(MARGIN + 7 * mm, use_y + use_h - 17 * mm, "Read the pack first. Use only as directed.")
     use_steps = [
         "Read the printed label fully before using the product.",
         "Follow the pack's dose, crop stage and application method.",
         "Keep the pack sealed, dry and away from direct sunlight.",
     ]
+    use_steps_hi = [
+        "उपयोग से पहले उत्पाद का लेबल पूरा पढ़ें।",
+        "पैक पर दी गई मात्रा, फसल अवस्था और उपयोग विधि का पालन करें।",
+        "पैक को बंद, सूखी जगह और सीधी धूप से दूर रखें।",
+    ]
     step_start = MARGIN + 7 * mm
     step_width = (W - 2 * MARGIN - 14 * mm) / 3
     for index, instruction in enumerate(use_steps):
-        draw_use_step(c, step_start + index * step_width, use_y + 6 * mm, step_width - 3 * mm, index, instruction)
+        draw_use_step(c, step_start + index * step_width, use_y + 6 * mm, step_width - 3 * mm, index, instruction, use_steps_hi[index])
 
     footer(c, number + 2, total)
     c.showPage()
