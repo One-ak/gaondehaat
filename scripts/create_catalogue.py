@@ -190,13 +190,17 @@ def parse_products():
             raise ValueError(f"Missing {key} in product data")
         return match.group(1)
 
+    def array_prop(block, key):
+        match = re.search(rf"\b{key}:\s*\[([^\]]+)\]", block, flags=re.S)
+        return re.findall(r"'([^']*)'", match.group(1)) if match else []
+
     products = []
     for block in blocks:
-        benefits_match = re.search(r"\bbenefits:\s*\[([^\]]+)\]", block, flags=re.S)
-        if not benefits_match:
+        benefits = array_prop(block, "benefits")
+        if not benefits:
             raise ValueError("Missing benefits in product data")
-        benefits_hi_match = re.search(r"\bbenefitsHi:\s*\[([^\]]+)\]", block, flags=re.S)
-        if not benefits_hi_match:
+        benefits_hi = array_prop(block, "benefitsHi")
+        if not benefits_hi:
             raise ValueError("Missing benefitsHi in product data")
         product = {
             "slug": prop(block, "slug"),
@@ -209,10 +213,20 @@ def parse_products():
             "packHi": prop(block, "packHi"),
             "overview": prop(block, "overview"),
             "overviewHi": prop(block, "overviewHi"),
-            "benefits": re.findall(r"'([^']*)'", benefits_match.group(1)),
-            "benefitsHi": re.findall(r"'([^']*)'", benefits_hi_match.group(1)),
+            "benefits": benefits,
+            "benefitsHi": benefits_hi,
             "suitable": prop(block, "suitable"),
             "suitableHi": prop(block, "suitableHi"),
+            "catalogueUsage": array_prop(block, "catalogueUsage") or [
+                "Read the product label fully before use.",
+                "Follow the label's dose and application method.",
+                "Keep the pack sealed, dry and shaded.",
+            ],
+            "catalogueUsageHi": array_prop(block, "catalogueUsageHi") or [
+                "उपयोग से पहले उत्पाद का लेबल पूरा पढ़ें।",
+                "लेबल पर दी गई मात्रा और विधि का पालन करें।",
+                "पैक को बंद, सूखी और छायादार जगह रखें।",
+            ],
         }
         product["category"] = "soil" if product["slug"] in SOIL_PRODUCTS else "growth" if product["slug"] in GROWTH_PRODUCTS else "micro"
         products.append(product)
@@ -566,21 +580,19 @@ def draw_product_profile(c, product, number, total):
     c.roundRect(MARGIN, use_y, W - 2 * MARGIN, use_h, 4 * mm, stroke=0, fill=1)
     c.setFillColor(GOLD)
     c.setFont("Helvetica-Bold", 7.3)
-    c.drawString(MARGIN + 7 * mm, use_y + use_h - 10 * mm, "LABEL-GUIDED USE")
-    use_steps = [
-        "Read the printed label fully before using the product.",
-        "Follow the pack's dose, crop stage and application method.",
-        "Keep the pack sealed, dry and away from direct sunlight.",
-    ]
-    use_steps_hi = [
-        "उपयोग से पहले उत्पाद का लेबल पूरा पढ़ें।",
-        "पैक पर दी गई मात्रा, फसल अवस्था और उपयोग विधि का पालन करें।",
-        "पैक को बंद, सूखी जगह और सीधी धूप से दूर रखें।",
-    ]
+    c.drawString(MARGIN + 7 * mm, use_y + use_h - 10 * mm, "PACK GUIDANCE")
     step_start = MARGIN + 7 * mm
     step_width = (W - 2 * MARGIN - 14 * mm) / 3
-    for index, instruction in enumerate(use_steps):
-        draw_use_step(c, step_start + index * step_width, use_y + 6 * mm, step_width - 3 * mm, index, instruction, use_steps_hi[index])
+    for index, instruction in enumerate(product["catalogueUsage"][:3]):
+        draw_use_step(
+            c,
+            step_start + index * step_width,
+            use_y + 6 * mm,
+            step_width - 3 * mm,
+            index,
+            instruction,
+            product["catalogueUsageHi"][index],
+        )
 
     footer(c, number + 2, total)
     c.showPage()

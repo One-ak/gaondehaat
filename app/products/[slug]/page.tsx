@@ -61,6 +61,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const enquiryLink = createWhatsAppLink(
     `Hello Gao Dehat Team,\n\nI would like to enquire about ${product.name} (${product.nameHi}).\n\nPlease share product information, availability and pricing.\n\nThank you.`
   );
+  const usage = product.usage ?? standardUse.en;
+  const usageHi = product.usageHi ?? standardUse.hi;
 
   const productSchema = {
     '@context': 'https://schema.org',
@@ -160,12 +162,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <article className="detail-panel use-panel" id="how-to-use">
             <p className="panel-kicker"><Copy en="How to use" hi="कैसे उपयोग करें" /></p>
-            <p className="panel-intro"><Copy en="For the safest and most effective result, use the printed product label as the primary instruction." hi="सबसे सुरक्षित और प्रभावी उपयोग के लिए, उत्पाद पर छपे लेबल को प्राथमिक निर्देश मानें।" /></p>
+            <p className="panel-intro"><Copy en="These pack-based guidance points make it easier to discuss the right application with the Gao Dehat team or a qualified crop advisor." hi="ये पैक-आधारित बिंदु गाँव देहात टीम या योग्य कृषि सलाहकार के साथ सही उपयोग पर चर्चा करना आसान बनाते हैं।" /></p>
             <ol className="use-list">
-              {standardUse.en.map((instruction, index) => (
+              {usage.map((instruction, index) => (
                 <li key={instruction}>
                   <span className="step-number">{index + 1}</span>
-                  <Copy en={instruction} hi={standardUse.hi[index]} />
+                  <Copy en={instruction} hi={usageHi[index]} />
                 </li>
               ))}
             </ol>
