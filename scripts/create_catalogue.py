@@ -406,7 +406,9 @@ def draw_category_card(c, category, products, x, y, width, height):
         c.setFont("Helvetica-Bold", 6.2)
         c.drawString(x + 7 * mm, row_y, f"{index + 1:02d}")
         draw_exact_name_row(c, product["name"], x + 15 * mm, row_y, width - 22 * mm, 7.3, INK)
-    draw_image_contain(c, PUBLIC / products[0]["image"].lstrip("/"), x + width - 34 * mm, y + 7 * mm, 27 * mm, 33 * mm)
+
+    # Keep the guide card strictly for scanning the range. A large pack visual
+    # here covered the lower product names for longer product families.
 
 
 def draw_catalogue_guide(c, products, total):
@@ -467,8 +469,9 @@ def draw_benefit_card(c, x, y, width, height, index, value, value_hi, style):
     c.setFillColor(CLAY)
     c.setFont("Helvetica-Bold", 6.7)
     c.drawString(x + 7 * mm, y + height - 25 * mm, "KEY BENEFIT")
-    english_end = draw_wrapped(c, value, x + 7 * mm, y + height - 36 * mm, width - 14 * mm, font=SERIF_BOLD, size=9, leading=11, color=INK, max_lines=2)
-    draw_exact_wrapped(c, value_hi, x + 7 * mm, english_end - 2 * mm, width - 14 * mm, size=8.2, leading=10, color=INK, max_lines=2)
+    # Reserve enough lower padding for two lines of Hindi copy.
+    english_end = draw_wrapped(c, value, x + 7 * mm, y + height - 33 * mm, width - 14 * mm, font=SERIF_BOLD, size=9, leading=11, color=INK, max_lines=2)
+    draw_exact_wrapped(c, value_hi, x + 7 * mm, english_end - 1.5 * mm, width - 14 * mm, size=7.8, leading=9.5, color=INK, max_lines=2)
 
 
 def draw_use_step(c, x, y, width, index, value, value_hi):
@@ -550,21 +553,20 @@ def draw_product_profile(c, product, number, total):
     suitable_end = draw_wrapped(c, product["suitable"], detail_x + 32 * mm, essentials_top - 31 * mm, detail_w - 38 * mm, size=6.6, leading=7.7, color=MUTED, max_lines=2)
     draw_exact_wrapped(c, product["suitableHi"], detail_x + 32 * mm, suitable_end - 1 * mm, detail_w - 38 * mm, size=7.1, leading=8.5, color=INK, max_lines=2)
 
-    benefit_y, benefit_h = 68 * mm, 51 * mm
+    # The Hindi Suitable line ends below the essentials card on longer labels.
+    # Move the benefit row down slightly so the two sections never touch.
+    benefit_y, benefit_h = 64 * mm, 50 * mm
     benefit_gap = 5 * mm
     benefit_w = (W - 2 * MARGIN - 2 * benefit_gap) / 3
     for index, benefit in enumerate(product["benefits"][:3]):
         draw_benefit_card(c, MARGIN + index * (benefit_w + benefit_gap), benefit_y, benefit_w, benefit_h, index, benefit, product["benefitsHi"][index], style)
 
-    use_y, use_h = 20 * mm, 44 * mm
+    use_y, use_h = 18 * mm, 42 * mm
     c.setFillColor(INK)
     c.roundRect(MARGIN, use_y, W - 2 * MARGIN, use_h, 4 * mm, stroke=0, fill=1)
     c.setFillColor(GOLD)
     c.setFont("Helvetica-Bold", 7.3)
     c.drawString(MARGIN + 7 * mm, use_y + use_h - 10 * mm, "LABEL-GUIDED USE")
-    c.setFillColor(HexColor("#D8EAD3"))
-    c.setFont("Helvetica", 6.8)
-    c.drawString(MARGIN + 7 * mm, use_y + use_h - 17 * mm, "Read the pack first. Use only as directed.")
     use_steps = [
         "Read the printed label fully before using the product.",
         "Follow the pack's dose, crop stage and application method.",
