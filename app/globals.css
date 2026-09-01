@@ -230,3 +230,22 @@ footer.site-footer .footer-phrase { display: block; color: #e4efdd !important; f
   .product-details { min-height: 0; }
   .product-details h3 { min-height: 0; }
 }
+
+/* Smooth featured-product transitions */
+.hero-slider-stage { position: relative; min-height: 321px; margin: 18px 0 15px; overflow: hidden; }
+.hero-slider-stage .hero-slider-card { position: absolute; inset: 0; height: 100%; margin: 0; }
+.hero-slider-card--active { z-index: 2; animation: hero-product-slide-in .64s cubic-bezier(.22, .85, .28, 1) both; }
+.hero-slider-card--leaving { z-index: 1; pointer-events: none; animation: hero-product-slide-out .5s cubic-bezier(.4, 0, 1, 1) both; }
+.hero-slider-card--active .hero-slider-pack { animation: hero-product-pack-in .7s cubic-bezier(.22, .85, .28, 1) .04s both; }
+.hero-slider-card--active .hero-slider-content > * { animation: hero-product-copy-in .46s ease-out both; }
+.hero-slider-card--active .hero-slider-content > :nth-child(1) { animation-delay: .10s; }
+.hero-slider-card--active .hero-slider-content > :nth-child(2) { animation-delay: .15s; }
+.hero-slider-card--active .hero-slider-content > :nth-child(3) { animation-delay: .20s; }
+.hero-slider-card--active .hero-slider-content > :nth-child(4) { animation-delay: .25s; }
+.hero-slider-card--active .hero-slider-content > :nth-child(5) { animation-delay: .30s; }
+.hero-slider-card--active .hero-slider-content > :nth-child(6) { animation-delay: .35s; }
+@keyframes hero-product-slide-in { from { opacity: 0; transform: translate3d(12%, 0, 0) scale(.985); } to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); } }
+@keyframes hero-product-slide-out { from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); } to { opacity: 0; transform: translate3d(-10%, 0, 0) scale(.99); } }
+@keyframes hero-product-pack-in { from { opacity: 0; transform: translate3d(-20px, 10px, 0) scale(.96); } to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); } }
+@keyframes hero-product-copy-in { from { opacity: 0; transform: translate3d(18px, 0, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@media (max-width: 800px) { .hero-slider-stage { min-height: 0; } }
