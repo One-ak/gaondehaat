@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import LanguageToggle from '../../../components/LanguageToggle';
 import MobileNav from '../../../components/MobileNav';
 import SiteFooter from '../../../components/SiteFooter';
+import ThemeToggle from '../../../components/ThemeToggle';
 import { getProduct, products, standardUse } from '../../product-data';
 import { createWhatsAppLink } from '../../site-contact';
 
@@ -92,6 +93,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
         <div className="nav-actions">
           <LanguageToggle />
+          <ThemeToggle />
           <MobileNav />
           <a className="detail-enquiry" href={enquiryLink} target="_blank" rel="noreferrer"><Copy en="WhatsApp enquiry" hi="व्हाट्सऐप पूछताछ" /> <span>↗</span></a>
         </div>

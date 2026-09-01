@@ -5,6 +5,7 @@ import ProductCompare from '../components/ProductCompare';
 import ProductCatalogue from '../components/ProductCatalogue';
 import SiteFooter from '../components/SiteFooter';
 import HeroProductSlider from '../components/HeroProductSlider';
+import ThemeToggle from '../components/ThemeToggle';
 import { products } from './product-data';
 import { COMPANY_EMAIL, createWhatsAppLink, generalWhatsAppLink, WHATSAPP_DISPLAY_NUMBER } from './site-contact';
 
@@ -56,6 +57,7 @@ export default function Home() {
           </div>
           <div className="nav-actions">
             <LanguageToggle />
+            <ThemeToggle />
             <MobileNav />
             <a className="nav-cta" href="#products"><Copy en="Explore products" hi="उत्पाद देखें" /> <span>↗</span></a>
           </div>
