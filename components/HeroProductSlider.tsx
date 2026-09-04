@@ -15,11 +15,11 @@ function Copy({ en, hi }: { en: string; hi: string }) {
 
 const featuredSlugs = ['super-power-win', 'bhumi-pakar', 'fertile-blossom-high-zinc', 'boron-gold'];
 
-function ProductSlide({ product, motionClass, hidden = false }: { product: Product; motionClass: string; hidden?: boolean }) {
+function ProductSlide({ product, motionClass }: { product: Product; motionClass: string }) {
   return (
-    <div className={`hero-slider-card ${product.className} ${motionClass}`} aria-hidden={hidden || undefined}>
+    <div className={`hero-slider-card ${product.className} ${motionClass}`}>
       <div className="hero-slider-pack">
-        <img src={product.image} alt={hidden ? '' : `${product.name} product pack`} />
+        <img src={product.image} alt={`${product.name} product pack`} />
         <span><Copy en="Actual product pack" hi="वास्तविक उत्पाद पैक" /></span>
       </div>
       <div className="hero-slider-content">
@@ -31,7 +31,7 @@ function ProductSlide({ product, motionClass, hidden = false }: { product: Produ
           <strong><Copy en={product.benefits[0]} hi={product.benefitsHi[0]} /></strong>
         </div>
         <p className="hero-slider-use"><Copy en={product.usage?.[0] ?? product.suitable} hi={product.usageHi?.[0] ?? product.suitableHi} /></p>
-        <Link href={`/products/${product.slug}`} tabIndex={hidden ? -1 : undefined}><Copy en="View product details" hi="उत्पाद विवरण देखें" /> <span>↗</span></Link>
+        <Link href={`/products/${product.slug}`}><Copy en="View product details" hi="उत्पाद विवरण देखें" /> <span>↗</span></Link>
       </div>
     </div>
   );
@@ -43,32 +43,20 @@ export default function HeroProductSlider({ products, fullBleed = false }: { pro
     [products],
   );
   const [activeIndex, setActiveIndex] = useState(0);
-  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (featured.length < 2) return undefined;
     const timer = window.setInterval(() => {
-      setActiveIndex((current) => {
-        setPreviousIndex(current);
-        return (current + 1) % featured.length;
-      });
+      setActiveIndex((current) => (current + 1) % featured.length);
     }, 4600);
     return () => window.clearInterval(timer);
   }, [featured.length]);
 
-  useEffect(() => {
-    if (previousIndex === null) return undefined;
-    const timer = window.setTimeout(() => setPreviousIndex(null), 640);
-    return () => window.clearTimeout(timer);
-  }, [activeIndex, previousIndex]);
-
   if (featured.length === 0) return null;
   const product = featured[activeIndex];
-  const previousProduct = previousIndex === null ? null : featured[previousIndex];
 
   const selectProduct = (index: number) => {
     if (index === activeIndex) return;
-    setPreviousIndex(activeIndex);
     setActiveIndex(index);
   };
 
@@ -79,7 +67,6 @@ export default function HeroProductSlider({ products, fullBleed = false }: { pro
         <span>{String(activeIndex + 1).padStart(2, '0')} / {String(featured.length).padStart(2, '0')}</span>
       </div>
       <div className="hero-slider-stage">
-        {previousProduct && <ProductSlide product={previousProduct} motionClass="hero-slider-card--leaving" hidden />}
         <ProductSlide key={product.slug} product={product} motionClass="hero-slider-card--active" />
       </div>
       <div className="hero-slider-controls" role="tablist" aria-label="Choose a featured product">
