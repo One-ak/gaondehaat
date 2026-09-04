@@ -77,7 +77,7 @@ export default function ProductCatalogue({ products }: { products: Product[] }) 
         <Copy en={`${filteredProducts.length} products shown`} hi={`${filteredProducts.length} उत्पाद दिखाए गए`} />
       </p>
 
-      <div className="product-grid">
+      <div className="product-grid" data-scroll-reveal="stagger">
         {filteredProducts.map((product, index) => (
           <Link className={`product-card ${product.className}`} href={`/products/${product.slug}`} key={product.slug} aria-label={`View ${product.name} details`}>
             <div className="product-image-wrap">

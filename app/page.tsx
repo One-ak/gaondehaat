@@ -3,6 +3,7 @@ import LanguageToggle from '../components/LanguageToggle';
 import MobileNav from '../components/MobileNav';
 import ProductCompare from '../components/ProductCompare';
 import ProductCatalogue from '../components/ProductCatalogue';
+import ScrollEffects from '../components/ScrollEffects';
 import SiteFooter from '../components/SiteFooter';
 import HeroProductSlider from '../components/HeroProductSlider';
 import ThemeToggle from '../components/ThemeToggle';
@@ -45,6 +46,7 @@ const practices = [
 export default function Home() {
   return (
     <main>
+      <ScrollEffects />
       <section className="hero hero-product-landing" id="home">
         <nav className="nav shell" aria-label="Main navigation">
           <a className="brand" href="#home" aria-label="Gao Dehat home">
@@ -72,7 +74,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="intro-section shell" id="about">
+      <section className="intro-section shell" id="about" data-scroll-reveal>
         <div className="section-label"><span>01</span> <Copy en="Our purpose" hi="हमारा उद्देश्य" /></div>
         <div className="intro-copy">
           <p className="intro-kicker"><Copy en="A Vansh Group company" hi="वंश ग्रुप की एक कंपनी" /></p>
@@ -82,12 +84,12 @@ export default function Home() {
       </section>
 
       <section className="principles">
-        <div className="shell">
+        <div className="shell" data-scroll-reveal>
           <div className="section-heading">
             <div className="section-label light"><span>02</span> <Copy en="Our approach" hi="हमारा दृष्टिकोण" /></div>
             <h2><Copy en="Good farming begins" hi="अच्छी खेती शुरू होती है" /><br /><Copy en="with " hi="" /><em><Copy en="good care." hi="सही देखभाल से।" /></em></h2>
           </div>
-          <div className="practice-grid">
+          <div className="practice-grid" data-scroll-reveal="stagger">
             {practices.map((practice) => (
               <article className="practice" key={practice.number}>
                 <span className="practice-number">{practice.number}</span>
@@ -102,7 +104,7 @@ export default function Home() {
 
       <section className="products-section" id="products">
         <div className="shell">
-          <div className="products-heading">
+          <div className="products-heading" data-scroll-reveal>
             <div>
               <div className="section-label"><span>03</span> <Copy en="Our products" hi="हमारे उत्पाद" /></div>
               <h2><Copy en="A better season starts" hi="बेहतर मौसम शुरू होता है" /><br /><Copy en="with the right " hi="सही " /><em><Copy en="input." hi="इनपुट से।" /></em></h2>
@@ -124,7 +126,7 @@ export default function Home() {
       </section>
 
       <section className="group-section">
-        <div className="shell group-grid">
+        <div className="shell group-grid" data-scroll-reveal>
           <div>
             <div className="section-label"><span>04</span> <Copy en="The Vansh Group network" hi="वंश ग्रुप नेटवर्क" /></div>
             <h2><Copy en="One group. " hi="एक ग्रुप। " /><em><Copy en="Practical support." hi="व्यावहारिक सहयोग।" /></em></h2>
@@ -142,14 +144,14 @@ export default function Home() {
 
       <section className="crop-guide-section" id="crop-guides">
         <div className="shell">
-          <div className="crop-guide-heading">
+          <div className="crop-guide-heading" data-scroll-reveal>
             <div>
               <div className="section-label"><span>05</span> <Copy en="Crop-focus guide" hi="फसल-केंद्रित मार्गदर्शिका" /></div>
               <h2><Copy en="Find support for the" hi="अपनी फसल के लिए सही" /><br /><em><Copy en="way you grow." hi="सहयोग चुनें।" /></em></h2>
             </div>
             <p><Copy en="Start with your crop focus, then use the exact product label and a qualified crop advisor for final application guidance." hi="अपनी फसल की आवश्यकता से शुरुआत करें, फिर अंतिम उपयोग मार्गदर्शन के लिए उत्पाद लेबल और योग्य कृषि सलाहकार की सलाह लें।" /></p>
           </div>
-          <div className="crop-guide-grid">
+          <div className="crop-guide-grid" data-scroll-reveal="stagger">
             <article className="crop-guide-card soil-guide">
               <p className="crop-guide-number">01</p>
               <h3><Copy en="Soil nourishment" hi="मिट्टी पोषण" /></h3>
@@ -177,14 +179,14 @@ export default function Home() {
 
       <section className="trust-section" id="quality">
         <div className="shell">
-          <div className="trust-heading">
+          <div className="trust-heading" data-scroll-reveal>
             <div>
               <div className="section-label light"><span>06</span> <Copy en="Quality and care" hi="गुणवत्ता और देखभाल" /></div>
               <h2><Copy en="Clear product information." hi="स्पष्ट उत्पाद जानकारी।" /><br /><em><Copy en="Practical support." hi="व्यावहारिक सहयोग।" /></em></h2>
             </div>
             <p><Copy en="Every Gao Dehat product page keeps the pack, benefits and label-guided use information together, so farmers can make a more informed enquiry." hi="हर गाँव देहात उत्पाद पृष्ठ पर पैक, लाभ और लेबल-आधारित उपयोग जानकारी एक साथ दी जाती है, ताकि किसान सही जानकारी के साथ पूछताछ कर सकें।" /></p>
           </div>
-          <div className="trust-grid">
+          <div className="trust-grid" data-scroll-reveal="stagger">
             <article className="trust-card">
               <span>01</span>
               <h3><Copy en="Pack-first information" hi="पैक-आधारित जानकारी" /></h3>
@@ -205,7 +207,7 @@ export default function Home() {
       </section>
 
       <section className="growth-section">
-        <div className="shell growth-wrap">
+        <div className="shell growth-wrap" data-scroll-reveal>
           <div className="growth-copy">
             <p className="eyebrow pale"><span /> <Copy en="Healthy plant, better yield" hi="स्वस्थ पौधा, बेहतर उपज" /></p>
             <h2><Copy en="Small drops." hi="छोटी बूंदें।" /><br /><em><Copy en="Real growth." hi="सच्ची वृद्धि।" /></em></h2>
@@ -220,7 +222,7 @@ export default function Home() {
       </section>
 
       <section className="contact-section" id="contact">
-        <div className="shell contact-grid">
+        <div className="shell contact-grid" data-scroll-reveal>
           <div>
             <div className="section-label"><span>07</span> <Copy en="Let’s grow together" hi="आइए साथ बढ़ें" /></div>
             <h2><Copy en="For product, dealer or" hi="उत्पाद, डीलर या" /><br /><em><Copy en="bulk supply enquiries." hi="बल्क सप्लाई जानकारी के लिए।" /></em></h2>
