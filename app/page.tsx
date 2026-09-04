@@ -7,7 +7,7 @@ import SiteFooter from '../components/SiteFooter';
 import HeroProductSlider from '../components/HeroProductSlider';
 import ThemeToggle from '../components/ThemeToggle';
 import { products } from './product-data';
-import { COMPANY_EMAIL, createWhatsAppLink, generalWhatsAppLink, WHATSAPP_DISPLAY_NUMBER } from './site-contact';
+import { COMPANY_EMAIL, generalWhatsAppLink, WHATSAPP_DISPLAY_NUMBER } from './site-contact';
 
 function Copy({ en, hi }: { en: string; hi: string }) {
   return (
@@ -45,7 +45,7 @@ const practices = [
 export default function Home() {
   return (
     <main>
-      <section className="hero" id="home">
+      <section className="hero hero-product-landing" id="home">
         <nav className="nav shell" aria-label="Main navigation">
           <a className="brand" href="#home" aria-label="Gao Dehat home">
             <img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" />
@@ -63,26 +63,8 @@ export default function Home() {
           </div>
         </nav>
 
-        <div className="hero-grid shell">
-          <div className="hero-copy">
-            <p className="eyebrow"><span /> <Copy en="Crop nutrition, built around the pack" hi="पैक-आधारित फसल पोषण" /></p>
-            <h1><Copy en="Better inputs." hi="बेहतर इनपुट।" /><br /><em><Copy en="Stronger fields." hi="मजबूत खेत।" /></em></h1>
-            <p className="hero-text"><Copy en="Gao Dehat brings soil health, plant nutrition and crop-support products together with clear pack information, practical benefits and label-guided use." hi="गाँव देहात मिट्टी स्वास्थ्य, पौध पोषण और फसल सहयोग उत्पादों के साथ स्पष्ट पैक जानकारी, व्यावहारिक लाभ और लेबल-आधारित उपयोग मार्गदर्शन देता है।" /></p>
-            <div className="hero-actions">
-              <a className="button button-dark" href="#products"><Copy en="Explore products" hi="उत्पाद देखें" /> <span>↓</span></a>
-              <a className="text-link" href={createWhatsAppLink('I would like information about Gao Dehat products.')} target="_blank" rel="noreferrer"><Copy en="WhatsApp enquiry" hi="व्हाट्सऐप पूछताछ" /> <span>↗</span></a>
-            </div>
-            <div className="hero-proof">
-              <div className="mini-seal">GD</div>
-              <p><strong><Copy en="Pack-led product details" hi="पैक-आधारित उत्पाद जानकारी" /></strong><br /><Copy en="Benefits, suitability and use guidance are kept together for every product." hi="हर उत्पाद के लिए लाभ, उपयुक्तता और उपयोग मार्गदर्शन एक साथ उपलब्ध है।" /></p>
-            </div>
-          </div>
-          <div className="hero-art" aria-label="Gao Dehat featured product collection">
-            <div className="hero-field-sun" />
-            <div className="hero-field-lines" />
-            <div className="hero-field-label"><Copy en="For Indian farms" hi="भारतीय खेतों के लिए" /></div>
-            <HeroProductSlider products={products} />
-          </div>
+        <div className="hero-full-product shell" aria-label="Gao Dehat featured product collection">
+          <HeroProductSlider products={products} fullBleed />
         </div>
         <div className="hero-bottom shell">
           <p><Copy en="Soil health" hi="मिट्टी स्वास्थ्य" /> <span>●</span> <Copy en="Plant growth" hi="पौध वृद्धि" /> <span>●</span> <Copy en="Micronutrient support" hi="सूक्ष्म पोषक सहयोग" /></p>

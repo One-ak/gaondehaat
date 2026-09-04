@@ -37,7 +37,7 @@ function ProductSlide({ product, motionClass, hidden = false }: { product: Produ
   );
 }
 
-export default function HeroProductSlider({ products }: { products: Product[] }) {
+export default function HeroProductSlider({ products, fullBleed = false }: { products: Product[]; fullBleed?: boolean }) {
   const featured = useMemo(
     () => featuredSlugs.map((slug) => products.find((product) => product.slug === slug)).filter(Boolean) as Product[],
     [products],
@@ -73,7 +73,7 @@ export default function HeroProductSlider({ products }: { products: Product[] })
   };
 
   return (
-    <div className="hero-slider" aria-label="Featured Gao Dehat products">
+    <div className={`hero-slider${fullBleed ? ' hero-slider--full' : ''}`} aria-label="Featured Gao Dehat products">
       <div className="hero-slider-topline">
         <p><span /> <Copy en="Hero products" hi="प्रमुख उत्पाद" /></p>
         <span>{String(activeIndex + 1).padStart(2, '0')} / {String(featured.length).padStart(2, '0')}</span>
