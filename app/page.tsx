@@ -142,11 +142,55 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="directors-section" id="directors">
+        <div className="shell">
+          <div className="directors-heading" data-scroll-reveal>
+            <div>
+              <div className="section-label"><span>05</span> <Copy en="Message from the directors" hi="निदेशकों का संदेश" /></div>
+              <h2><Copy en="Built with care." hi="देखभाल के साथ।" /><br /><em><Copy en="Guided by purpose." hi="उद्देश्य के साथ।" /></em></h2>
+            </div>
+            <p><Copy en="Our directors share a commitment to practical, responsible support for Indian agriculture—keeping farmers, soil health and long-term partnerships at the centre of every decision." hi="हमारे निदेशक भारतीय कृषि के लिए व्यावहारिक और जिम्मेदार सहयोग के प्रति प्रतिबद्ध हैं—हर निर्णय में किसान, मिट्टी का स्वास्थ्य और दीर्घकालिक साझेदारियों को केंद्र में रखते हैं।" /></p>
+          </div>
+
+          <div className="director-grid" data-scroll-reveal="stagger">
+            <article className="director-card">
+              <div className="director-portrait">
+                <img src="/directors/mayank-mathur.png" alt="Mayank Mathur, Director" />
+                <span><Copy en="Director" hi="निदेशक" /></span>
+              </div>
+              <div className="director-message">
+                <span className="director-mark" aria-hidden="true">“</span>
+                <blockquote><Copy en="At Gao Dehat, we believe every farmer deserves dependable inputs, clear information and support that respects the realities of the field. Our commitment is to build practical solutions that help farmers grow with confidence, season after season." hi="गाँव देहात में हमारा विश्वास है कि हर किसान को भरोसेमंद इनपुट, स्पष्ट जानकारी और खेत की वास्तविक जरूरतों को समझने वाला सहयोग मिलना चाहिए। हमारा संकल्प ऐसे व्यावहारिक समाधान तैयार करना है, जो किसानों को हर मौसम में आत्मविश्वास के साथ आगे बढ़ने में मदद करें।" /></blockquote>
+                <div>
+                  <strong>Mayank Mathur</strong>
+                  <span><Copy en="Director, Gao Dehat" hi="निदेशक, गाँव देहात" /></span>
+                </div>
+              </div>
+            </article>
+
+            <article className="director-card director-card--reverse">
+              <div className="director-portrait">
+                <img src="/directors/lavanya-mathur.png" alt="Lavanya Mathur, Director" />
+                <span><Copy en="Director" hi="निदेशक" /></span>
+              </div>
+              <div className="director-message">
+                <span className="director-mark" aria-hidden="true">“</span>
+                <blockquote><Copy en="For us, progress begins with care: care for soil, crops, farmers and the partnerships that serve them. We are focused on bringing consistency and responsibility to every Gao Dehat product, so better farming decisions can lead to stronger, more sustainable outcomes." hi="हमारे लिए प्रगति की शुरुआत देखभाल से होती है—मिट्टी, फसल, किसान और उन साझेदारियों की देखभाल से जो किसानों की सेवा करती हैं। हम हर गाँव देहात उत्पाद में निरंतरता और जिम्मेदारी लाने पर केंद्रित हैं, ताकि बेहतर कृषि निर्णय मजबूत और अधिक टिकाऊ परिणामों तक पहुंचें।" /></blockquote>
+                <div>
+                  <strong>Lavanya Mathur</strong>
+                  <span><Copy en="Director, Gao Dehat" hi="निदेशक, गाँव देहात" /></span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section className="crop-guide-section" id="crop-guides">
         <div className="shell">
           <div className="crop-guide-heading" data-scroll-reveal>
             <div>
-              <div className="section-label"><span>05</span> <Copy en="Crop-focus guide" hi="फसल-केंद्रित मार्गदर्शिका" /></div>
+              <div className="section-label"><span>06</span> <Copy en="Crop-focus guide" hi="फसल-केंद्रित मार्गदर्शिका" /></div>
               <h2><Copy en="Find support for the" hi="अपनी फसल के लिए सही" /><br /><em><Copy en="way you grow." hi="सहयोग चुनें।" /></em></h2>
             </div>
             <p><Copy en="Start with your crop focus, then use the exact product label and a qualified crop advisor for final application guidance." hi="अपनी फसल की आवश्यकता से शुरुआत करें, फिर अंतिम उपयोग मार्गदर्शन के लिए उत्पाद लेबल और योग्य कृषि सलाहकार की सलाह लें।" /></p>
@@ -181,7 +225,7 @@ export default function Home() {
         <div className="shell">
           <div className="trust-heading" data-scroll-reveal>
             <div>
-              <div className="section-label light"><span>06</span> <Copy en="Quality and care" hi="गुणवत्ता और देखभाल" /></div>
+              <div className="section-label light"><span>07</span> <Copy en="Quality and care" hi="गुणवत्ता और देखभाल" /></div>
               <h2><Copy en="Clear product information." hi="स्पष्ट उत्पाद जानकारी।" /><br /><em><Copy en="Practical support." hi="व्यावहारिक सहयोग।" /></em></h2>
             </div>
             <p><Copy en="Every Gao Dehat product page keeps the pack, benefits and label-guided use information together, so farmers can make a more informed enquiry." hi="हर गाँव देहात उत्पाद पृष्ठ पर पैक, लाभ और लेबल-आधारित उपयोग जानकारी एक साथ दी जाती है, ताकि किसान सही जानकारी के साथ पूछताछ कर सकें।" /></p>
@@ -224,7 +268,7 @@ export default function Home() {
       <section className="contact-section" id="contact">
         <div className="shell contact-grid" data-scroll-reveal>
           <div>
-            <div className="section-label"><span>07</span> <Copy en="Let’s grow together" hi="आइए साथ बढ़ें" /></div>
+            <div className="section-label"><span>08</span> <Copy en="Let’s grow together" hi="आइए साथ बढ़ें" /></div>
             <h2><Copy en="For product, dealer or" hi="उत्पाद, डीलर या" /><br /><em><Copy en="bulk supply enquiries." hi="बल्क सप्लाई जानकारी के लिए।" /></em></h2>
           </div>
           <div className="contact-details">

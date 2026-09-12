@@ -17,8 +17,9 @@ export default function ThemeToggle() {
     const preferred: Theme = saved === 'dark' || saved === 'light'
       ? saved
       : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    setTheme(preferred);
     applyTheme(preferred);
+    const frame = window.requestAnimationFrame(() => setTheme(preferred));
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   function toggleTheme() {
