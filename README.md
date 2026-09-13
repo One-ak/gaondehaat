@@ -4,7 +4,7 @@ Next.js / React agricultural product website with 17 product pages, English/Hind
 
 ## Hostinger Node.js deployment through GitHub
 
-The owner will push this repository to GitHub and connect it in Hostinger. No deployment or GitHub push has been performed by this update.
+Production is deployed to **https://gaondehaat.com** on the existing Hostinger Node.js plan, connected to `One-ak/gaondehaat`, branch `main`.
 
 | Setting | Value |
 | --- | --- |
@@ -20,7 +20,7 @@ The Node server honours Hostinger's `PORT`. Use Hostinger's Next.js preset; do n
 
 Before the production build, configure these environment variables in Hostinger:
 
-- `SITE_URL`: the exact final HTTPS origin (e.g. `https://your-owned-domain.com`). Choose www or non-www consistently. No path/query.
+- `SITE_URL=https://gaondehaat.com`: the production HTTPS origin. No path/query.
 - `SITE_INDEXING=true` on the final production domain. Use `false` for a temporary preview to disable indexing; rebuild after changing it.
 - `GOOGLE_SITE_VERIFICATION`: optional Search Console HTML-tag verification token, not the whole meta tag.
 
@@ -52,6 +52,8 @@ For a custom SITE_URL build, pass that origin as the second check argument. `npm
 ## Security and content boundaries
 
 No login, payments, uploads, database or form-submission service is present. Product data is repository-controlled; search/comparison/preferences are browser-local. Enquiries are outbound WhatsApp/mailto links. Node response headers restrict framing, executable content sources, sensitive browser permissions and MIME sniffing. CSP retains inline scripts for Next hydration; it does not constitute a strict nonce-based XSS policy. HTTPS/TLS and edge rate limits must be configured by the host.
+
+Hostinger CDN was observed replacing the app's CSP header with `upgrade-insecure-requests`. The shared policy in `app/security-policy.ts` is therefore also emitted inside `<head>` so content-source restrictions remain enforced. The header retains `frame-ancestors`; the document policy omits this unsupported meta directive. The live `X-Frame-Options: SAMEORIGIN` header provides framing protection when the CDN replaces CSP. The launch check requires the document policy and framing header, not just Hostinger's default CSP. See [MDN CSP guidance](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP).
 
 Product structured data intentionally has no invented prices, ratings or reviews; Product rich-result eligibility is not promised. SEO foundations improve crawlability and clarity, not guaranteed positions. Keep product names, claims, doses and contact details verified against approved packaging. Director messages are drafted copy and should receive director approval before launch.
 

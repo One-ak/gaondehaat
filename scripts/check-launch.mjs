@@ -20,7 +20,21 @@ const results = await Promise.allSettled(routes.map(async (path) => {
   for (const match of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(match[1]);
   assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
   assert.equal(response.headers.get('x-powered-by'), null);
-  assert.match(response.headers.get('content-security-policy') || '', /object-src 'none'/);
+  assert.equal(response.headers.get('x-frame-options'), 'SAMEORIGIN');
+  const head = html.match(/<head>([\s\S]*?)<\/head>/)?.[1] || '';
+  const documentPolicy = (head.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)"\s*\/?\s*>/i)?.[1] || '')
+    .replaceAll('&#x27;', "'").replaceAll('&#39;', "'").replaceAll('&apos;', "'");
+  const headerPolicy = response.headers.get('content-security-policy') || '';
+  // Hostinger CDN replaces the response CSP with upgrade-insecure-requests.
+  // Require the real restrictions in the head policy too, not just that header.
+  assert.ok(headerPolicy.includes('object-src') || headerPolicy.includes('upgrade-insecure-requests'), `${path}: response CSP exists`);
+  const policies = headerPolicy.includes('object-src') ? [documentPolicy, headerPolicy] : [documentPolicy];
+  for (const policy of policies) {
+    for (const directive of ["default-src 'self'", "object-src 'none'", "base-uri 'self'", "form-action 'self'", "connect-src 'self'", "script-src 'self' 'unsafe-inline'", "img-src 'self' data: blob:", "font-src 'self' data:", "style-src 'self' 'unsafe-inline'"]) {
+      assert.ok(policy.split(';').map((part) => part.trim()).includes(directive), `${path}: CSP ${directive}`);
+    }
+    assert.ok(!policy.includes('unsafe-eval'), `${path}: no production eval allowance`);
+  }
   assert.match(html, /wa\.me\/919196702525/, `${path}: correct enquiry destination`);
   assert.ok(!html.includes('class="site-loader"'), `${path}: no blocking loader`);
   if (path !== '/') assert.match(html, /BreadcrumbList/, `${path}: breadcrumb schema`);

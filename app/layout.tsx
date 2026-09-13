@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { COMPANY_EMAIL, WHATSAPP_DISPLAY_NUMBER } from './site-contact';
 import { SITE_URL, INDEXING_ENABLED, absoluteUrl, serializeSchema } from './site-config';
+import { DOCUMENT_SECURITY_POLICY } from './security-policy';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -52,6 +53,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
   return (
     <html lang="en">
+      <head>
+        <meta httpEquiv="Content-Security-Policy" content={DOCUMENT_SECURITY_POLICY} />
+      </head>
       <body>
         <a className="skip-link" href="#main-content">Skip to content</a>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeSchema(organizationSchema) }} />
