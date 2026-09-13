@@ -34,12 +34,14 @@ export default function ScrollEffects() {
           }
         });
       },
-      { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
+      // A small viewport may never show 10% of a long section/card.
+      // Any intersection is enough: motion must not gate access to content.
+      { rootMargin: '0px 0px -24px 0px', threshold: 0 },
     );
 
     targets.forEach((target) => {
-      // Content stays visible without JavaScript. Only animate off-screen
-      // sections once the observer is installed, avoiding a first-paint flash.
+      // This only opts into a finite entrance animation. Pending targets stay
+      // visible, even if an observer callback is delayed or never arrives.
       if (target.getBoundingClientRect().top >= window.innerHeight) target.classList.add('reveal-ready');
       observer.observe(target);
     });

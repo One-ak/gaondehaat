@@ -56,6 +56,22 @@ const pdf = await fetch(new URL('/gao-dehat-product-catalogue.pdf', base));
 assert.equal(pdf.status, 200);
 assert.match(pdf.headers.get('content-type') || '', /pdf/);
 const home = await (await fetch(base)).text();
+// Regression: the whole tall mobile catalogue must never be a reveal gate.
+const cards = [...home.matchAll(/<a\b[^>]*class="product-card[^\"]*"[^>]*>/g)];
+assert.equal(cards.length, 17, 'All product cards are server rendered');
+assert.ok(cards.every(([tag]) => tag.includes('data-scroll-reveal')), 'Observe cards individually');
+assert.ok(!/<div\b[^>]*class="product-grid"[^>]*data-scroll-reveal/.test(home), 'No whole-grid reveal gate');
 const assets = new Set([...home.matchAll(/(?:src|href)="(\/(?:_next\/static|products|directors)[^"]+)"/g)].map((m) => m[1].replaceAll('&amp;', '&')));
-for (const path of assets) assert.equal((await fetch(new URL(path, base))).status, 200, `Asset ${path}`);
-console.log(`PASS: ${routes.length} pages, metadata, structured data, security headers, sitemap, robots, 404s, PDF and ${assets.size} assets.`);
+for (const path of assets) {
+  const response = await fetch(new URL(path, base));
+  assert.equal(response.status, 200, `Asset ${path}`);
+  if (path.endsWith('.css')) {
+    const css = await response.text();
+    for (const [, selector, declarations] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      if (selector.includes('data-scroll-reveal') && !selector.includes('.is-revealed')) {
+        assert.ok(!/opacity\s*:\s*0\s*[;!}]/.test(`${declarations}}`), 'Pending reveal content must remain visible');
+      }
+    }
+  }
+}
+console.log(`PASS: ${routes.length} pages, metadata, structured data, security headers, sitemap, robots, 404s, PDF, mobile reveal safety and ${assets.size} assets.`);
