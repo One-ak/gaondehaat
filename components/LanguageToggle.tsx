@@ -8,7 +8,8 @@ export default function LanguageToggle() {
   const [language, setLanguage] = useState<Language>('en');
 
   useEffect(() => {
-    const saved = window.localStorage.getItem('gao-dehat-language');
+    let saved: string | null = null;
+    try { saved = window.localStorage.getItem('gao-dehat-language'); } catch { /* Storage is optional. */ }
     if (saved === 'hi') {
       const frame = window.requestAnimationFrame(() => setLanguage('hi'));
       return () => window.cancelAnimationFrame(frame);
@@ -21,7 +22,7 @@ export default function LanguageToggle() {
   }, [language]);
 
   function chooseLanguage(nextLanguage: Language) {
-    window.localStorage.setItem('gao-dehat-language', nextLanguage);
+    try { window.localStorage.setItem('gao-dehat-language', nextLanguage); } catch { /* Storage is optional. */ }
     setLanguage(nextLanguage);
   }
 

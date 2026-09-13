@@ -1,20 +1,24 @@
 import type { Metadata } from 'next';
-import SiteLoader from '../components/SiteLoader';
 import { COMPANY_EMAIL, WHATSAPP_DISPLAY_NUMBER } from './site-contact';
+import { SITE_URL, INDEXING_ENABLED, absoluteUrl, serializeSchema } from './site-config';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Gao Dehat | Sustainable agricultural inputs',
-  description: 'Gao Dehat brings dependable organic and bio-based agricultural inputs for healthy soil, stronger crops and better yields.',
+  title: 'Gao Dehat | Crop Nutrition & Agricultural Inputs, Barabanki',
+  description: 'Explore Gao Dehat crop nutrition, soil-health and micronutrient products. Compare pack sizes, benefits and label-guided use, and enquire with our Barabanki team.',
   keywords: ['Gao Dehat', 'agricultural inputs', 'soil health', 'micronutrient fertilizer', 'organic manure', 'plant growth promoter', 'Barabanki'],
-  metadataBase: new URL('https://gao-dehat.fishgoldindustries.chatgpt.site'),
+  metadataBase: new URL(SITE_URL),
   alternates: { canonical: '/' },
-  robots: { index: true, follow: true },
+  robots: { index: INDEXING_ENABLED, follow: INDEXING_ENABLED },
+  verification: { google: process.env.GOOGLE_SITE_VERIFICATION || undefined },
+  icons: { icon: '/favicon.svg' },
   openGraph: {
     title: 'Gao Dehat | Sustainable agricultural inputs',
     description: 'Healthy soil. Abundant harvests.',
     siteName: 'Gao Dehat',
     type: 'website',
+    url: SITE_URL,
+    locale: 'en_IN',
     images: [{ url: '/og.png', width: 1730, height: 910, alt: 'Gao Dehat — Healthy soil. Abundant harvests.' }],
   },
   twitter: {
@@ -31,8 +35,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     '@type': 'Organization',
     name: 'Gao Dehat Industries Pvt. Ltd.',
     alternateName: 'Gao Dehat',
-    url: 'https://gao-dehat.fishgoldindustries.chatgpt.site',
-    logo: 'https://gao-dehat.fishgoldindustries.chatgpt.site/gao-dehat-logo.jpeg',
+    '@id': `${SITE_URL}/#organization`,
+    url: SITE_URL,
+    logo: absoluteUrl('/gao-dehat-logo.jpeg'),
     email: COMPANY_EMAIL,
     telephone: WHATSAPP_DISPLAY_NUMBER,
     address: {
@@ -48,8 +53,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
-        <SiteLoader />
+        <a className="skip-link" href="#main-content">Skip to content</a>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeSchema(organizationSchema) }} />
         {children}
       </body>
     </html>

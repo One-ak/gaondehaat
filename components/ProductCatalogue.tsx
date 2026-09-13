@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import SiteImage from './SiteImage';
 import { useMemo, useState } from 'react';
 import type { Product } from '../app/product-data';
 
@@ -82,11 +83,11 @@ export default function ProductCatalogue({ products }: { products: Product[] }) 
           <Link className={`product-card ${product.className}`} href={`/products/${product.slug}`} key={product.slug} aria-label={`View ${product.name} details`}>
             <div className="product-image-wrap">
               <span className="product-index">{String(index + 1).padStart(2, '0')}</span>
-              <img
+              <SiteImage
                 src={product.image}
                 alt={`${product.name} product packaging`}
-                loading={index < 3 ? 'eager' : 'lazy'}
-                fetchPriority={index < 3 ? 'high' : 'auto'}
+                loading="lazy"
+                sizes="(max-width: 800px) 90vw, (max-width: 1200px) 45vw, 30vw"
                 decoding="async"
               />
               <span className="product-note"><Copy en={product.note} hi={product.noteHi} /></span>

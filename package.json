@@ -7,8 +7,12 @@
   },
   "scripts": {
     "dev": "vinext dev",
-    "build": "vinext build",
-    "start": "vinext start",
+    "build": "next build --webpack",
+    "start": "next start --hostname 0.0.0.0",
+    "dev:next": "next dev",
+    "build:sites": "vinext build",
+    "start:sites": "vinext start",
+    "check:launch": "node scripts/check-launch.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import SiteImage from '../../../components/SiteImage';
 import { notFound } from 'next/navigation';
 import LanguageToggle from '../../../components/LanguageToggle';
 import MobileNav from '../../../components/MobileNav';
@@ -7,6 +8,7 @@ import SiteFooter from '../../../components/SiteFooter';
 import ThemeToggle from '../../../components/ThemeToggle';
 import { getProduct, products, standardUse } from '../../product-data';
 import { createWhatsAppLink } from '../../site-contact';
+import { absoluteUrl, serializeSchema } from '../../site-config';
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -37,9 +39,11 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   return {
     title,
     description: product.overview,
+    alternates: { canonical: `/products/${product.slug}` },
     openGraph: {
       title,
       description: product.overview,
+      url: absoluteUrl(`/products/${product.slug}`),
       images: [{ url: product.image, alt: `${product.name} product packaging` }],
     },
     twitter: {
@@ -70,7 +74,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
     '@type': 'Product',
     name: product.name,
     description: product.overview,
-    image: [`https://gao-dehat.fishgoldindustries.chatgpt.site${product.image}`],
+    url: absoluteUrl(`/products/${product.slug}`),
+    image: [absoluteUrl(product.image)],
     brand: { '@type': 'Brand', name: 'Gao Dehat' },
     manufacturer: { '@type': 'Organization', name: 'Gao Dehat Industries Pvt. Ltd.' },
     additionalProperty: [
@@ -81,11 +86,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
   };
 
   return (
-    <main className="product-page">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+    <main className="product-page" id="main-content" tabIndex={-1}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeSchema([productSchema, {
+        '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Gao Dehat', item: absoluteUrl('/') },
+          { '@type': 'ListItem', position: 2, name: product.name, item: absoluteUrl(`/products/${product.slug}`) },
+        ],
+      }]) }} />
       <nav className="detail-nav shell" aria-label="Product navigation">
         <Link className="brand" href="/" aria-label="Gao Dehat home">
-          <img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" />
+          <SiteImage src="/gao-dehat-logo.jpeg" alt="Gao Dehat" sizes="80px" />
         </Link>
         <div className="detail-nav-links">
           <Link href="/"><Copy en="Home" hi="होम" /></Link>
@@ -104,7 +115,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <Link className="back-link" href="/#products">← <Copy en="Back to product catalogue" hi="उत्पाद सूची पर वापस" /></Link>
           <div className="detail-hero-grid">
             <div className={`detail-product-image ${product.className}`}>
-              <img src={product.image} alt={`${product.name} product packaging`} />
+              <SiteImage src={product.image} alt={`${product.name} product packaging`} loading="eager" fetchPriority="high" />
             </div>
             <div className="detail-copy">
               <p className="detail-kicker"><Copy en="Gao Dehat product" hi="गाँव देहात उत्पाद" /></p>

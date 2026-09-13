@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import SiteImage from './SiteImage';
 
 export default function SiteLoader() {
   const [visible, setVisible] = useState(true);
@@ -30,7 +31,7 @@ export default function SiteLoader() {
       <div className="loader-orbit orbit-one" />
       <div className="loader-orbit orbit-two" />
       <div className="loader-logo-wrap">
-        <img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" />
+        <SiteImage src="/gao-dehat-logo.jpeg" alt="Gao Dehat" sizes="152px" />
       </div>
       <p>ग्राम्य पोषण, समृद्ध किसान</p>
       <span>Preparing the field</span>

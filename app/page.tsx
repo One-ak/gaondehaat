@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import SiteImage from '../components/SiteImage';
 import LanguageToggle from '../components/LanguageToggle';
 import MobileNav from '../components/MobileNav';
 import ProductCompare from '../components/ProductCompare';
@@ -45,12 +46,13 @@ const practices = [
 
 export default function Home() {
   return (
-    <main>
+    <main id="main-content" tabIndex={-1}>
+      <h1 className="sr-only">Gao Dehat — Crop nutrition, soil health and agricultural inputs</h1>
       <ScrollEffects />
       <section className="hero hero-product-landing" id="home">
         <nav className="nav shell" aria-label="Main navigation">
           <a className="brand" href="#home" aria-label="Gao Dehat home">
-            <img src="/gao-dehat-logo.jpeg" alt="Gao Dehat" />
+            <SiteImage src="/gao-dehat-logo.jpeg" alt="Gao Dehat" sizes="80px" />
           </a>
           <div className="nav-links">
             <a href="#about"><Copy en="Our purpose" hi="हमारा उद्देश्य" /></a>
@@ -155,7 +157,7 @@ export default function Home() {
           <div className="director-grid" data-scroll-reveal="stagger">
             <article className="director-card">
               <div className="director-portrait">
-                <img src="/directors/mayank-mathur.png" alt="Mayank Mathur, Director" />
+                <SiteImage src="/directors/mayank-mathur.png" alt="Mayank Mathur, Director" />
                 <span><Copy en="Director" hi="निदेशक" /></span>
               </div>
               <div className="director-message">
@@ -170,7 +172,7 @@ export default function Home() {
 
             <article className="director-card director-card--reverse">
               <div className="director-portrait">
-                <img src="/directors/lavanya-mathur.png" alt="Lavanya Mathur, Director" />
+                <SiteImage src="/directors/lavanya-mathur.png" alt="Lavanya Mathur, Director" />
                 <span><Copy en="Director" hi="निदेशक" /></span>
               </div>
               <div className="director-message">
@@ -214,7 +216,7 @@ export default function Home() {
               <p className="crop-guide-number">03</p>
               <h3><Copy en="Micronutrient balance" hi="सूक्ष्म पोषक संतुलन" /></h3>
               <p><Copy en="For label-guided nutrient support across crop and flower programmes." hi="फसल और फूल कार्यक्रमों में लेबल-आधारित पोषक सहयोग के लिए।" /></p>
-              <div><span>Zinc Super Gold</span><span>Magnesium Gold</span><span>Boron Gold</span></div>
+              <div><span>Zinc Super Gold</span><span>Magnesium Gold</span><span>Poshak</span></div>
               <Link href="/products/zinc-super-gold"><Copy en="Explore micronutrients" hi="सूक्ष्म पोषक देखें" /> <span>→</span></Link>
             </article>
           </div>
@@ -259,7 +261,7 @@ export default function Home() {
             <Link className="button button-cream" href="/products/super-power-win"><Copy en="View product details" hi="उत्पाद विवरण देखें" /> <span>→</span></Link>
           </div>
           <div className="growth-visual">
-            <img src="/products/super-power-win.jpg" alt="Super Power Win product packaging" />
+            <SiteImage src="/products/super-power-win.jpg" alt="Super Power Win product packaging" />
             <div className="round-copy"><Copy en="Healthy plant" hi="स्वस्थ पौधा" /><br /><b><Copy en="Better yield" hi="बेहतर उपज" /></b></div>
           </div>
         </div>

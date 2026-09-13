@@ -37,12 +37,18 @@ export default function ScrollEffects() {
       { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
     );
 
-    targets.forEach((target) => observer.observe(target));
+    targets.forEach((target) => {
+      // Content stays visible without JavaScript. Only animate off-screen
+      // sections once the observer is installed, avoiding a first-paint flash.
+      if (target.getBoundingClientRect().top >= window.innerHeight) target.classList.add('reveal-ready');
+      observer.observe(target);
+    });
     window.addEventListener('scroll', updateProgress, { passive: true });
     window.addEventListener('resize', updateProgress);
 
     return () => {
       observer.disconnect();
+      targets.forEach((target) => target.classList.remove('reveal-ready'));
       window.removeEventListener('scroll', updateProgress);
       window.removeEventListener('resize', updateProgress);
     };

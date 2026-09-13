@@ -1,4 +1,4 @@
-export const WHATSAPP_NUMBER = '9196702525';
+export const WHATSAPP_NUMBER = '919196702525';
 export const WHATSAPP_DISPLAY_NUMBER = '+91 91967 02525';
 export const COMPANY_EMAIL = 'Gaondehat31@gmail.com';
 

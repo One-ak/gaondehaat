@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import SiteImage from './SiteImage';
 import { useEffect, useMemo, useState } from 'react';
 import type { Product } from '../app/product-data';
 
@@ -19,11 +20,11 @@ function ProductSlide({ product, motionClass }: { product: Product; motionClass:
   return (
     <div className={`hero-slider-card ${product.className} ${motionClass}`}>
       <div className="hero-slider-pack">
-        <img src={product.image} alt={`${product.name} product pack`} />
+        <SiteImage src={product.image} alt={`${product.name} product pack`} loading="eager" fetchPriority="high" />
         <span><Copy en="Actual product pack" hi="वास्तविक उत्पाद पैक" /></span>
       </div>
       <div className="hero-slider-content">
-        <p className="hero-slider-name-hi">{product.nameHi}</p>
+        <p className="hero-slider-name-hi" lang="hi">{product.nameHi}</p>
         <h2>{product.name}</h2>
         <p className="hero-slider-type"><Copy en={product.type} hi={product.typeHi} /></p>
         <div className="hero-slider-fact">
@@ -43,33 +44,44 @@ export default function HeroProductSlider({ products, fullBleed = false }: { pro
     [products],
   );
   const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [interacting, setInteracting] = useState(false);
 
   useEffect(() => {
-    if (featured.length < 2) return undefined;
+    if (featured.length < 2 || paused || interacting) return undefined;
     const timer = window.setInterval(() => {
+      if (document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       setActiveIndex((current) => (current + 1) % featured.length);
-    }, 4600);
+    }, 6500);
     return () => window.clearInterval(timer);
-  }, [featured.length]);
+  }, [featured.length, paused, interacting]);
 
   if (featured.length === 0) return null;
   const product = featured[activeIndex];
 
   const selectProduct = (index: number) => {
+    setPaused(true);
     if (index === activeIndex) return;
     setActiveIndex(index);
   };
 
   return (
-    <div className={`hero-slider${fullBleed ? ' hero-slider--full' : ''}`} aria-label="Featured Gao Dehat products">
+    <div className={`hero-slider${fullBleed ? ' hero-slider--full' : ''}`} role="region" aria-roledescription="carousel" aria-label="Featured Gao Dehat products"
+      onMouseEnter={() => setInteracting(true)} onMouseLeave={() => setInteracting(false)}
+      onFocusCapture={(event) => {
+        if (!(event.target as HTMLElement).closest('.hero-pause')) setPaused(true);
+      }}>
       <div className="hero-slider-topline">
         <p><span /> <Copy en="Hero products" hi="प्रमुख उत्पाद" /></p>
+        <button className="hero-pause" type="button" onClick={() => setPaused((value) => !value)} aria-label={paused ? 'Resume product slideshow' : 'Pause product slideshow'}>
+          <Copy en={paused ? 'Play slides' : 'Pause slides'} hi={paused ? 'स्लाइड चलाएँ' : 'स्लाइड रोकें'} />
+        </button>
         <span>{String(activeIndex + 1).padStart(2, '0')} / {String(featured.length).padStart(2, '0')}</span>
       </div>
-      <div className="hero-slider-stage">
+      <div className="hero-slider-stage" aria-live={paused ? 'polite' : 'off'} aria-atomic="true">
         <ProductSlide key={product.slug} product={product} motionClass="hero-slider-card--active" />
       </div>
-      <div className="hero-slider-controls" role="tablist" aria-label="Choose a featured product">
+      <div className="hero-slider-controls" role="group" aria-label="Choose a featured product">
         {featured.map((item, index) => (
           <button
             type="button"
@@ -77,10 +89,9 @@ export default function HeroProductSlider({ products, fullBleed = false }: { pro
             className={index === activeIndex ? 'active' : ''}
             onClick={() => selectProduct(index)}
             aria-label={`Show ${item.name}`}
-            aria-selected={index === activeIndex}
-            role="tab"
+            aria-pressed={index === activeIndex}
           >
-            <img src={item.image} alt="" />
+            <SiteImage src={item.image} alt="" sizes="44px" />
             <span>{item.name}</span>
           </button>
         ))}

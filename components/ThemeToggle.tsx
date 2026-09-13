@@ -13,7 +13,8 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
-    const saved = window.localStorage.getItem('gao-dehat-theme') as Theme | null;
+    let saved: string | null = null;
+    try { saved = window.localStorage.getItem('gao-dehat-theme'); } catch { /* Private/storage-disabled browsers still work. */ }
     const preferred: Theme = saved === 'dark' || saved === 'light'
       ? saved
       : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -25,7 +26,7 @@ export default function ThemeToggle() {
   function toggleTheme() {
     const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
-    window.localStorage.setItem('gao-dehat-theme', nextTheme);
+    try { window.localStorage.setItem('gao-dehat-theme', nextTheme); } catch { /* Preference remains usable for this visit. */ }
     applyTheme(nextTheme);
   }
 
