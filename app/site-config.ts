@@ -1,6 +1,6 @@
 // Set SITE_URL at build time to the final HTTPS domain. Never derive canonical
 // URLs from request Host headers (which visitors can control).
-const configuredUrl = process.env.SITE_URL || 'https://gao-dehat.fishgoldindustries.chatgpt.site';
+const configuredUrl = process.env.SITE_URL || 'https://gaondehaat.com';
 const parsedUrl = new URL(configuredUrl);
 if (parsedUrl.protocol !== 'https:' || parsedUrl.username || parsedUrl.password || parsedUrl.pathname !== '/' || parsedUrl.search || parsedUrl.hash) {
   throw new Error('SITE_URL must be an HTTPS origin, for example https://www.example.com');
