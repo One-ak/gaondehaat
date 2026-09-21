@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import sharp from 'sharp';
 
 // Usage: npm run check:launch -- http://localhost:3100 https://your-domain.com
 const base = new URL(process.argv[2] || 'http://localhost:3100');
@@ -68,16 +69,23 @@ for (const [path, type] of [
   assert.equal(response.status, 200, `${path}: available to crawlers`);
   assert.equal(response.headers.get('content-type')?.split(';')[0], type, `${path}: correct MIME type`);
   const bytes = Buffer.from(await response.arrayBuffer());
-  assert.deepEqual(bytes, await readFile(new URL(`../public${path}`, import.meta.url)), `${path}: deployed brand asset matches`);
+  const expected = await readFile(new URL(`../public${path}`, import.meta.url));
   if (type === 'image/png') {
     assert.equal(bytes.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `${path}: PNG signature`);
     assert.equal(bytes.readUInt32BE(16), path.includes('96x96') ? 96 : 180, `${path}: square icon width`);
     assert.equal(bytes.readUInt32BE(20), bytes.readUInt32BE(16), `${path}: square icon height`);
+    // The CDN may losslessly recompress PNGs or add metadata. Compare decoded
+    // pixels so those changes pass, while a different logo still fails.
+    const [actualPixels, expectedPixels] = await Promise.all([bytes, expected].map((file) => sharp(file).ensureAlpha().raw().toBuffer()));
+    assert.ok(actualPixels.equals(expectedPixels), `${path}: deployed brand pixels match`);
   } else if (type === 'image/x-icon') {
     assert.equal(bytes.subarray(0, 4).toString('hex'), '00000100', `${path}: ICO signature`);
+    assert.ok(bytes.equals(expected), `${path}: deployed brand asset matches`);
   } else {
     assert.match(bytes.toString(), /^<svg\s/, `${path}: actual SVG document`);
+    assert.ok(bytes.equals(expected), `${path}: deployed brand asset matches`);
   }
+  console.log(`PASS ${path}`);
 }
 // Regression: the whole tall mobile catalogue must never be a reveal gate.
 const cards = [...home.matchAll(/<a\b[^>]*class="product-card[^\"]*"[^>]*>/g)];
@@ -97,4 +105,4 @@ for (const path of assets) {
     }
   }
 }
-console.log(`PASS: ${routes.length} pages, metadata, structured data, security headers, sitemap, robots, 404s, PDF, mobile reveal safety and ${assets.size} assets.`);
+console.log(`PASS: ${routes.length} pages, branded favicons, metadata, structured data, security headers, sitemap, robots, 404s, PDF, mobile reveal safety and ${assets.size} assets.`);
