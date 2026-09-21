@@ -12,7 +12,14 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
   robots: { index: INDEXING_ENABLED, follow: INDEXING_ENABLED },
   verification: { google: process.env.GOOGLE_SITE_VERIFICATION || undefined },
-  icons: { icon: '/favicon.svg' },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', type: 'image/x-icon', sizes: '16x16 32x32 48x48 64x64 128x128 256x256' },
+      { url: '/favicon-96x96.png', type: 'image/png', sizes: '96x96' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [{ url: '/apple-touch-icon.png', type: 'image/png', sizes: '180x180' }],
+  },
   openGraph: {
     title: 'Gao Dehat | Sustainable agricultural inputs',
     description: 'Healthy soil. Abundant harvests.',

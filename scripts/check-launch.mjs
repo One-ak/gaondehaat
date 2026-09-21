@@ -13,6 +13,7 @@ const results = await Promise.allSettled(routes.map(async (path) => {
   assert.equal(response.status, 200, `${path}: status`);
   const html = await response.text();
   assert.equal([...html.matchAll(/<h1(?:\s|>)/g)].length, 1, `${path}: one H1`);
+  assert.match(html, /<link rel="icon" href="\/favicon-96x96\.png"[^>]*type="image\/png"[^>]*sizes="96x96"/, `${path}: branded search favicon`);
   assert.match(html, /<meta name="description" content="[^"]+"/, `${path}: description`);
   const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
   assert.ok(canonical, `${path}: canonical exists`);
@@ -56,6 +57,28 @@ const pdf = await fetch(new URL('/gao-dehat-product-catalogue.pdf', base));
 assert.equal(pdf.status, 200);
 assert.match(pdf.headers.get('content-type') || '', /pdf/);
 const home = await (await fetch(base)).text();
+// Catch mislabeled image files (for example JPEG bytes named favicon.svg).
+for (const [path, type] of [
+  ['/favicon-96x96.png', 'image/png'],
+  ['/apple-touch-icon.png', 'image/png'],
+  ['/favicon.ico', 'image/x-icon'],
+  ['/favicon.svg', 'image/svg+xml'],
+]) {
+  const response = await fetch(new URL(path, base));
+  assert.equal(response.status, 200, `${path}: available to crawlers`);
+  assert.equal(response.headers.get('content-type')?.split(';')[0], type, `${path}: correct MIME type`);
+  const bytes = Buffer.from(await response.arrayBuffer());
+  assert.deepEqual(bytes, await readFile(new URL(`../public${path}`, import.meta.url)), `${path}: deployed brand asset matches`);
+  if (type === 'image/png') {
+    assert.equal(bytes.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `${path}: PNG signature`);
+    assert.equal(bytes.readUInt32BE(16), path.includes('96x96') ? 96 : 180, `${path}: square icon width`);
+    assert.equal(bytes.readUInt32BE(20), bytes.readUInt32BE(16), `${path}: square icon height`);
+  } else if (type === 'image/x-icon') {
+    assert.equal(bytes.subarray(0, 4).toString('hex'), '00000100', `${path}: ICO signature`);
+  } else {
+    assert.match(bytes.toString(), /^<svg\s/, `${path}: actual SVG document`);
+  }
+}
 // Regression: the whole tall mobile catalogue must never be a reveal gate.
 const cards = [...home.matchAll(/<a\b[^>]*class="product-card[^\"]*"[^>]*>/g)];
 assert.equal(cards.length, 17, 'All product cards are server rendered');
