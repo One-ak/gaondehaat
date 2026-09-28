@@ -10,6 +10,8 @@ import HeroProductSlider from '../components/HeroProductSlider';
 import ThemeToggle from '../components/ThemeToggle';
 import { products } from './product-data';
 import { COMPANY_EMAIL, generalWhatsAppLink, WHATSAPP_DISPLAY_NUMBER } from './site-contact';
+import { absoluteUrl, serializeSchema } from './site-config';
+import { BRAND_NAME, BRAND_ALTERNATE_NAMES, HOME_DESCRIPTION } from './site-brand';
 
 function Copy({ en, hi }: { en: string; hi: string }) {
   return (
@@ -45,14 +47,27 @@ const practices = [
 ];
 
 export default function Home() {
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': absoluteUrl('/#website'),
+    url: absoluteUrl('/'),
+    name: BRAND_NAME,
+    alternateName: BRAND_ALTERNATE_NAMES,
+    description: HOME_DESCRIPTION,
+    inLanguage: ['en-IN', 'hi-IN'],
+    publisher: { '@id': absoluteUrl('/#organization') },
+  };
+
   return (
     <main id="main-content" tabIndex={-1}>
-      <h1 className="sr-only">Gao Dehat — Crop nutrition, soil health and agricultural inputs</h1>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeSchema(websiteSchema) }} />
+      <h1 className="sr-only">Gaon Dehat — Crop nutrition, soil health and agricultural inputs in Barabanki</h1>
       <ScrollEffects />
       <section className="hero hero-product-landing" id="home">
         <nav className="nav shell" aria-label="Main navigation">
-          <a className="brand" href="#home" aria-label="Gao Dehat home">
-            <SiteImage src="/gao-dehat-logo.jpeg" alt="Gao Dehat" sizes="80px" />
+          <a className="brand" href="#home" aria-label="Gaon Dehat home">
+            <SiteImage src="/gao-dehat-logo.jpeg" alt="Gaon Dehat (Gao Dehat)" sizes="80px" />
           </a>
           <div className="nav-links">
             <a href="#about"><Copy en="Our purpose" hi="हमारा उद्देश्य" /></a>
@@ -67,7 +82,7 @@ export default function Home() {
           </div>
         </nav>
 
-        <div className="hero-full-product shell" aria-label="Gao Dehat featured product collection">
+        <div className="hero-full-product shell" aria-label="Gaon Dehat featured product collection">
           <HeroProductSlider products={products} fullBleed />
         </div>
         <div className="hero-bottom shell">
@@ -80,8 +95,8 @@ export default function Home() {
         <div className="section-label"><span>01</span> <Copy en="Our purpose" hi="हमारा उद्देश्य" /></div>
         <div className="intro-copy">
           <p className="intro-kicker"><Copy en="A Vansh Group company" hi="वंश ग्रुप की एक कंपनी" /></p>
-          <h2><Copy en="Rooted in the belief that " hi="इस विश्वास पर आधारित कि " /><em><Copy en="every farmer deserves to grow with confidence." hi="हर किसान को आत्मविश्वास के साथ आगे बढ़ना चाहिए।" /></em></h2>
-          <p><Copy en="Gao Dehat is the agricultural-input and soil-health brand of Vansh Group, based in Barabanki, Uttar Pradesh. Alongside the group’s agro-input, animal-nutrition and bio-agro businesses, we support a more practical and self-reliant farming future." hi="गाँव देहात, बाराबंकी (उत्तर प्रदेश) स्थित वंश ग्रुप का कृषि-इनपुट और मिट्टी-स्वास्थ्य ब्रांड है। ग्रुप के कृषि-इनपुट, पशु-पोषण और बायो-एग्रो व्यवसायों के साथ मिलकर हम अधिक व्यावहारिक और आत्मनिर्भर खेती के भविष्य को सहयोग देते हैं।" /></p>
+          <h2><Copy en="Gaon Dehat. " hi="गाँव देहात। " /><em><Copy en="Crop nutrition, rooted in farming." hi="खेती से जुड़ा फसल पोषण।" /></em></h2>
+          <p><Copy en="Gaon Dehat, also written as Gao Dehat, is the agricultural-input and soil-health brand of Vansh Group, based in Barabanki, Uttar Pradesh. Our range brings together soil-health products, plant-growth promoters and micronutrients, with pack information and label-guided use for farmers, dealers and distribution partners." hi="गाँव देहात, बाराबंकी (उत्तर प्रदेश) स्थित वंश ग्रुप का कृषि-इनपुट और मिट्टी-स्वास्थ्य ब्रांड है। हमारी रेंज में मिट्टी-स्वास्थ्य उत्पाद, पौध वृद्धि प्रवर्धक और सूक्ष्म पोषक तत्व शामिल हैं। किसानों, डीलरों और वितरण साझेदारों के लिए पैक की जानकारी और लेबल-आधारित उपयोग साथ दिए गए हैं।" /></p>
         </div>
       </section>
 

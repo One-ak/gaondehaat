@@ -4,7 +4,7 @@ import sharp from 'sharp';
 
 // Usage: npm run check:launch -- http://localhost:3100 https://your-domain.com
 const base = new URL(process.argv[2] || 'http://localhost:3100');
-const canonicalBase = new URL(process.argv[3] || process.env.SITE_URL || 'https://gao-dehat.fishgoldindustries.chatgpt.site');
+const canonicalBase = new URL(process.argv[3] || process.env.SITE_URL || 'https://gaondehaat.com');
 const source = await readFile(new URL('../app/product-data.ts', import.meta.url), 'utf8');
 const slugs = [...source.matchAll(/slug: '([^']+)'/g)].map((match) => match[1]);
 assert.equal(slugs.length, 17, 'Expected the complete 17-product catalogue');
@@ -19,7 +19,29 @@ const results = await Promise.allSettled(routes.map(async (path) => {
   const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
   assert.ok(canonical, `${path}: canonical exists`);
   assert.equal(new URL(canonical).href, new URL(path, canonicalBase).href, `${path}: self canonical`);
-  for (const match of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(match[1]);
+  assert.match(html, /<title>[^<]*Gaon Dehat[^<]*<\/title>/, `${path}: consistent brand title`);
+  const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+    .flatMap((match) => JSON.parse(match[1]));
+  const organization = schemas.find((schema) => schema['@type'] === 'Organization');
+  assert.ok(organization, `${path}: organization identity`);
+  for (const name of ['Gaon Dehat', 'Gao Dehat', 'Gaondehaat', 'Gaondehat', 'गाँव देहात']) {
+    assert.ok(organization.alternateName.includes(name), `${path}: brand spelling ${name}`);
+  }
+  assert.equal(organization.brand.name, 'Gaon Dehat', `${path}: organization brand`);
+  if (path === '/') {
+    const websites = schemas.filter((schema) => schema['@type'] === 'WebSite');
+    assert.equal(websites.length, 1, 'One homepage WebSite identity');
+    assert.equal(websites[0].name, 'Gaon Dehat');
+    assert.equal(websites[0].url, new URL('/', canonicalBase).href);
+    assert.equal(websites[0].publisher['@id'], organization['@id']);
+    assert.deepEqual(websites[0].alternateName, organization.alternateName.slice(1));
+    assert.match(html, /Gaon Dehat, also written as Gao Dehat/, 'Visible copy explains brand spellings');
+  } else {
+    const product = schemas.find((schema) => schema['@type'] === 'Product');
+    assert.equal(product?.brand.name, 'Gaon Dehat', `${path}: product brand`);
+    assert.equal(product?.brand['@id'], organization.brand['@id'], `${path}: shared brand identity`);
+    assert.equal(product?.manufacturer['@id'], organization['@id'], `${path}: shared manufacturer identity`);
+  }
   assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
   assert.equal(response.headers.get('x-powered-by'), null);
   assert.equal(response.headers.get('x-frame-options'), 'SAMEORIGIN');

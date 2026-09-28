@@ -9,6 +9,7 @@ import ThemeToggle from '../../../components/ThemeToggle';
 import { getProduct, products, standardUse } from '../../product-data';
 import { createWhatsAppLink } from '../../site-contact';
 import { absoluteUrl, serializeSchema } from '../../site-config';
+import { BRAND_NAME } from '../../site-brand';
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -32,24 +33,26 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const product = getProduct(slug);
 
   if (!product) {
-    return { title: 'Product not found | Gao Dehat' };
+    return { title: `Product not found | ${BRAND_NAME}` };
   }
 
-  const title = `${product.name} | Gao Dehat`;
+  const title = `${product.name} | ${BRAND_NAME}`;
+  const description = `${product.name} from ${BRAND_NAME} (Gao Dehat). ${product.overview}`;
   return {
     title,
-    description: product.overview,
+    description,
     alternates: { canonical: `/products/${product.slug}` },
     openGraph: {
       title,
-      description: product.overview,
+      description,
+      siteName: BRAND_NAME,
       url: absoluteUrl(`/products/${product.slug}`),
       images: [{ url: product.image, alt: `${product.name} product packaging` }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
-      description: product.overview,
+      description,
       images: [product.image],
     },
   };
@@ -76,8 +79,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
     description: product.overview,
     url: absoluteUrl(`/products/${product.slug}`),
     image: [absoluteUrl(product.image)],
-    brand: { '@type': 'Brand', name: 'Gao Dehat' },
-    manufacturer: { '@type': 'Organization', name: 'Gao Dehat Industries Pvt. Ltd.' },
+    brand: { '@type': 'Brand', '@id': absoluteUrl('/#brand'), name: BRAND_NAME },
+    manufacturer: { '@type': 'Organization', '@id': absoluteUrl('/#organization'), name: 'Gao Dehat Industries Pvt. Ltd.' },
     additionalProperty: [
       { '@type': 'PropertyValue', name: 'Product type', value: product.type },
       { '@type': 'PropertyValue', name: 'Packing', value: product.pack },
@@ -90,13 +93,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeSchema([productSchema, {
         '@context': 'https://schema.org', '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Gao Dehat', item: absoluteUrl('/') },
+          { '@type': 'ListItem', position: 1, name: BRAND_NAME, item: absoluteUrl('/') },
           { '@type': 'ListItem', position: 2, name: product.name, item: absoluteUrl(`/products/${product.slug}`) },
         ],
       }]) }} />
       <nav className="detail-nav shell" aria-label="Product navigation">
-        <Link className="brand" href="/" aria-label="Gao Dehat home">
-          <SiteImage src="/gao-dehat-logo.jpeg" alt="Gao Dehat" sizes="80px" />
+        <Link className="brand" href="/" aria-label="Gaon Dehat home">
+          <SiteImage src="/gao-dehat-logo.jpeg" alt="Gaon Dehat (Gao Dehat)" sizes="80px" />
         </Link>
         <div className="detail-nav-links">
           <Link href="/"><Copy en="Home" hi="होम" /></Link>
@@ -118,7 +121,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <SiteImage src={product.image} alt={`${product.name} product packaging`} loading="eager" fetchPriority="high" />
             </div>
             <div className="detail-copy">
-              <p className="detail-kicker"><Copy en="Gao Dehat product" hi="गाँव देहात उत्पाद" /></p>
+              <p className="detail-kicker"><Copy en="Gaon Dehat product" hi="गाँव देहात उत्पाद" /></p>
               <p className="detail-name-hi" lang="hi">{product.nameHi}</p>
               <h1><Copy en={product.name} hi={product.nameHi} /></h1>
               <p className="detail-type"><Copy en={product.type} hi={product.typeHi} /></p>

@@ -16,11 +16,12 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="shell footer-inner">
         <div className="footer-brand-block">
-          <Link className="footer-brand" href="/" aria-label="Gao Dehat home">
-            <SiteImage src="/gao-dehat-logo.jpeg" alt="Gao Dehat" sizes="80px" />
+          <Link className="footer-brand" href="/" aria-label="Gaon Dehat home">
+            <SiteImage src="/gao-dehat-logo.jpeg" alt="Gaon Dehat (Gao Dehat)" sizes="80px" />
           </Link>
           <div className="footer-company">
-            <p className="footer-company-name">Gao Dehat Industries Pvt. Ltd.</p>
+            <p className="footer-company-name">Gaon Dehat (Gao Dehat)</p>
+            <p>Gao Dehat Industries Pvt. Ltd.</p>
             <p><Copy en="A Vansh Group company" hi="वंश ग्रुप की एक कंपनी" /></p>
           </div>
         </div>
